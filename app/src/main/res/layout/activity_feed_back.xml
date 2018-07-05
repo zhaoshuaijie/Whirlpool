@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.FeedBackActivity">
+
+    <include layout="@layout/titlebar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <lcsd.com.whirlpool.view.CleanableEditText
+                android:id="@+id/f6_ed_title"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/edit_fk"
+                android:drawableRight="@drawable/img_et_delete"
+                android:gravity="top"
+                android:hint="建议反馈标题"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textSize="14sp" />
+
+            <lcsd.com.whirlpool.view.CleanableEditText
+                android:id="@+id/f6_ed"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/edit_fk"
+                android:drawableRight="@drawable/img_et_delete"
+                android:gravity="top"
+                android:hint="建议反馈描述"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:overScrollMode="never" />
+
+            <TextView
+                android:id="@+id/f6_tv_fk"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/btn_bc"
+                android:gravity="center"
+                android:text="提  交"
+                android:textSize="15sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

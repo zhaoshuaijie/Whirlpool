@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scroll_f5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/darkblue"
+                android:gravity="center"
+                android:text="设   置"
+                android:textColor="@color/white" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:background="@drawable/img_beijing">
+
+                <lcsd.com.whirlpool.view.CircleImageView
+                    android:id="@+id/f5_civ"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/f5_et_nc"
+                android:layout_width="250dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_bc"
+                android:hint="昵称"
+                android:paddingLeft="5dp"
+                android:inputType="text"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray2"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/f5_tv_xm"
+                android:layout_width="250dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:textSize="13sp"
+                android:background="@drawable/edit_bc"
+                android:gravity="center_vertical"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/f5_et_qm"
+                android:layout_width="250dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_bc"
+                android:hint="个性签名"
+                android:paddingLeft="5dp"
+                android:inputType="text"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray2"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/f5_tv_jf"
+                android:layout_width="250dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_bc"
+                android:gravity="center_vertical"
+                android:inputType="text"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+
+                <TextView
+                    android:id="@+id/spinner1"
+                    android:layout_width="250dp"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:textSize="13sp"
+                    android:background="@drawable/edit_bc"
+                    android:textColor="@color/black"
+                    />
+
+                <TextView
+                    android:id="@+id/spinner2"
+                    android:layout_width="250dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/edit_bc"
+                    android:gravity="center_vertical"
+                    android:textSize="13sp"
+                    android:textColor="@color/black" />
+
+
+                <TextView
+                    android:id="@+id/spinner3"
+                    android:layout_width="250dp"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/edit_bc"
+                    android:textColor="@color/black" />
+
+
+                <TextView
+                    android:id="@+id/spinner4"
+                    android:layout_width="250dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/edit_bc"
+                    android:textSize="13sp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black" />
+
+
+            <TextView
+                android:id="@+id/f5_tv_bc"
+                android:layout_width="250dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_bc"
+                android:gravity="center"
+                android:text="保存"
+                android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/f5_tv_tc"
+                android:layout_width="250dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_bc"
+                android:gravity="center"
+                android:text="退 出 登 录"
+                android:textColor="@color/white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
+
+          <!--  <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="凌晨三点提供技术支持"
+                android:textSize="14sp"
+                android:layout_marginBottom="10dp"/>-->
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

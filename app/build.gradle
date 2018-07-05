@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+// 添加插件
+apply plugin: 'com.mob.sdk'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
+    defaultConfig {
+        applicationId "lcsd.com.whirlpool"
+        minSdkVersion 16
+        targetSdkVersion 22
+        versionCode 14
+        versionName "v2.5"
+        multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "81e8028ffaa6cee9bc5af0d1", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+        ]
+    }
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+// 在MobSDK的扩展中注册SMSSDK的相关信息
+MobSDK {
+    appKey "1ee7a6a498945"
+    appSecret "3ab7ef2e358bdba0e2d57ff173f80845"
+
+    SMSSDK {}
+}
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile project(':ptr-lib')
+    //视频
+    compile project(':gsyVideoPlayer')
+    //okhttp
+    compile project(':shapeloading')
+    compile 'com.squareup.okhttp:okhttp:2.2.0+'
+    //侧滑item
+    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+    //阿里巴巴fastjson
+    compile 'com.alibaba:fastjson:1.1.63.android'
+    // 图片视频选择
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+
+    implementation 'com.github.limxing:Android-PromptDialog:1.1.3'
+    //极光
+    compile 'cn.jiguang.sdk:jpush:3.1.1'
+    compile 'cn.jiguang.sdk:jcore:1.1.9'
+
+}

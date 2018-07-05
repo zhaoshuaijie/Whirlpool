@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<LinearLayout
+    android:id="@+id/ll_rd"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/who"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:lineSpacingExtra="3dp"/>
+    <ImageView
+        android:id="@+id/item_kstp2"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+    <RadioGroup
+        android:id="@+id/who_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rd_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp" />
+
+        <RadioButton
+            android:id="@+id/rd_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp" />
+
+        <RadioButton
+            android:id="@+id/rd_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp" />
+
+        <RadioButton
+            android:id="@+id/rd_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp" />
+        <RadioButton
+            android:id="@+id/rd_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp"
+            android:visibility="gone"/>
+        <RadioButton
+            android:id="@+id/rd_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:button="@drawable/checbox"
+            android:paddingLeft="10dp"
+            android:textSize="17sp"
+            android:visibility="gone"/>
+    </RadioGroup>
+</LinearLayout>
+<LinearLayout
+    android:id="@+id/ll_cb"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/how"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:lineSpacingExtra="3dp"/>
+    <ImageView
+        android:id="@+id/item_kstp1"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+    <CheckBox
+        android:id="@+id/cb1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="A"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
+
+    <CheckBox
+        android:id="@+id/cb2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="B"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
+
+    <CheckBox
+        android:id="@+id/cb3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="C"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
+
+    <CheckBox
+        android:id="@+id/cb4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="D"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
+    <CheckBox
+        android:id="@+id/cb5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="D"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:visibility="gone"/>
+    <CheckBox
+        android:id="@+id/cb6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/checbox"
+        android:paddingLeft="10dp"
+        android:text="D"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:visibility="gone"/>
+</LinearLayout>
+
+</LinearLayout>

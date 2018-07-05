@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/w2"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/et_nc"
+        android:layout_width="250dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="270dp"
+        android:background="@drawable/edit_bc"
+        android:hint="昵称"
+        android:lines="1"
+        android:inputType="text"
+        android:paddingLeft="5dp"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/et_xing"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/edit_bc"
+            android:hint="姓"
+            android:lines="1"
+            android:inputType="text"
+            android:paddingLeft="8dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray2"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:id="@+id/et_ming"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/edit_bc"
+            android:hint="名"
+            android:lines="1"
+            android:inputType="text"
+            android:textColorHint="@color/gray2"
+            android:paddingLeft="8dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/edit_bc"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/zhuce_spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:paddingLeft="7dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/edit_bc"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/zhuce_spinner2"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:paddingLeft="5dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/edit_bc"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/zhuce_spinner3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="5dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_zc"
+        android:layout_width="250dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_bc"
+        android:gravity="center"
+        android:text="注    册"
+        android:textColor="@color/white" />
+
+
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我阅读，并同意《使用条款和隐私政策》"
+        android:textSize="10sp" />
+
+
+</LinearLayout>
