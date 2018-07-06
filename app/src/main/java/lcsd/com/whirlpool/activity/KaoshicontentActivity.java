@@ -35,7 +35,11 @@ import lcsd.com.whirlpool.http.AppContext;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
 import lcsd.com.whirlpool.util.L;
+import lcsd.com.whirlpool.view.MultipleStatusView;
 
+/**
+ * 试题详情页
+ */
 public class KaoshicontentActivity extends BaseActivity implements View.OnClickListener {
     private String cate, type, id, point;
     private int psise = 10;
@@ -51,6 +55,7 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
     private boolean IsSubmit = true, isCt = false;
     private int num, fen;
     private ArrayList<String> mErridlist;
+    private MultipleStatusView mStatusView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +90,9 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
         iv_dc = (ImageView) findViewById(R.id.iv_dc);
         rl_dc = (RelativeLayout) findViewById(R.id.rl_dc);
         tv_jfct = (TextView) findViewById(R.id.tv_jfct);
+        mStatusView = findViewById(R.id.multiple_status_view);
         tv_jfct.setOnClickListener(this);
+        mStatusView.showLoading();
     }
 
     private void initData() {
@@ -145,15 +152,24 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                     SjKaoshi sjKaoshi = JSON.parseObject(json, SjKaoshi.class);
                     if (sjKaoshi.getTest() != null && sjKaoshi.getTest().size() > 0) {
                         list.addAll(sjKaoshi.getTest());
+                        point = sjKaoshi.getPoint();
+                        initShiti();
+                        mStatusView.showContent();
+                    } else {
+                        mStatusView.showEmpty();
                     }
-                    point = sjKaoshi.getPoint();
-                    initShiti();
+                } else {
+                    mStatusView.showError();
                 }
             }
 
             @Override
             public void onFailure(String msg) {
-                Toast.makeText(KaoshicontentActivity.this, msg, Toast.LENGTH_SHORT).show();
+                try {
+                    mStatusView.showNoNetwork();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

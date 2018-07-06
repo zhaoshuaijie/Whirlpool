@@ -46,6 +46,8 @@ public class KaoshiZxContent implements Serializable {
 
     private String url;
 
+    private boolean is_test;
+
     public void setIs_fen(String is_fen) {
         this.is_fen = is_fen;
     }
@@ -204,5 +206,13 @@ public class KaoshiZxContent implements Serializable {
 
     public void setFen(int fen) {
         this.fen = fen;
+    }
+
+    public boolean isIs_test() {
+        return is_test;
+    }
+
+    public void setIs_test(boolean is_test) {
+        this.is_test = is_test;
     }
 }

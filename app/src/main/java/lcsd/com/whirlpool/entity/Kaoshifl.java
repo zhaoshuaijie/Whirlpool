@@ -200,6 +200,8 @@ public class Kaoshifl {
                 private int fen;
                 private String is_fen;
                 private String sublist;
+                private boolean lock;
+                private boolean is_test;
 
                 public void setVouch(String value){
                     this.vouch = value;
@@ -349,6 +351,22 @@ public class Kaoshifl {
 
                 public void setSublist(String sublist) {
                     this.sublist = sublist;
+                }
+
+                public boolean isLock() {
+                    return lock;
+                }
+
+                public void setLock(boolean lock) {
+                    this.lock = lock;
+                }
+
+                public boolean isIs_test() {
+                    return is_test;
+                }
+
+                public void setIs_test(boolean is_test) {
+                    this.is_test = is_test;
                 }
             }
             private ArrayList<TSublist> sublist;	/*List<TSublist>*/

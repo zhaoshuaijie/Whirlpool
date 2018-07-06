@@ -1,29 +1,36 @@
 package lcsd.com.whirlpool.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import lcsd.com.whirlpool.R;
-import lcsd.com.whirlpool.adapter.KaoshiflzxAdapter;
+import lcsd.com.whirlpool.adapter.KaoshiflzxpxAdapter;
 import lcsd.com.whirlpool.entity.Kaoshifl;
 import lcsd.com.whirlpool.manager.ActivityManager;
 
+/**
+ * 培训师认证 初中高级列表
+ */
 public class SpecialcertificationActivity extends BaseActivity implements View.OnClickListener {
     private TextView title;
     private ListView mListView;
     private ArrayList<Kaoshifl.TTree.OSublist.TSublist> list_zx;
-    private KaoshiflzxAdapter adapter_zx;
+    private KaoshiflzxpxAdapter adapter_zx;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_specialcertification);
+        mContext = this;
         list_zx = (ArrayList<Kaoshifl.TTree.OSublist.TSublist>) getIntent().getSerializableExtra("list");
         initView();
         initData();
@@ -38,13 +45,17 @@ public class SpecialcertificationActivity extends BaseActivity implements View.O
     }
 
     private void initData() {
-        adapter_zx = new KaoshiflzxAdapter(list_zx, this);
+        adapter_zx = new KaoshiflzxpxAdapter(list_zx, this);
         mListView.setAdapter(adapter_zx);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(list_zx.get(i).getSublist()!=null&&list_zx.get(i).getSublist().length()>0){
-                    startActivity(new Intent(SpecialcertificationActivity.this, SpecialcertificationListActivity.class).putExtra("list",list_zx.get(i).getSublist()));
+                if (!list_zx.get(i).isLock()) {
+                    if (list_zx.get(i).getSublist() != null && list_zx.get(i).getSublist().length() > 0) {
+                        startActivity(new Intent(SpecialcertificationActivity.this, SpecialcertificationListActivity.class).putExtra("list", list_zx.get(i).getSublist()));
+                    }
+                } else {
+                    Toast.makeText(mContext, "请先通过上一级考核！", Toast.LENGTH_SHORT).show();
                 }
             }
         });

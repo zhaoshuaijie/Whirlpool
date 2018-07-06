@@ -14,6 +14,7 @@ import lcsd.com.whirlpool.entity.FeedBack;
 
 /**
  * Created by jie on 2018/6/15.
+ * 建议反馈列表
  */
 public class FeedBackAdaper extends BaseAdapter {
     private Context context;

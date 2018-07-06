@@ -1,11 +1,13 @@
 package lcsd.com.whirlpool.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
@@ -16,8 +18,10 @@ import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.KaoshiPxAdapter;
 import lcsd.com.whirlpool.entity.KaoshiZxContent;
 import lcsd.com.whirlpool.manager.ActivityManager;
-import lcsd.com.whirlpool.view.MultipleStatusView;
 
+/**
+ * 培训师认证考核试题列表
+ */
 public class SpecialcertificationListActivity extends BaseActivity implements View.OnClickListener {
     private TextView mTextView_title;
     private String title;
@@ -25,11 +29,13 @@ public class SpecialcertificationListActivity extends BaseActivity implements Vi
     private String sublist;
     private List<KaoshiZxContent> mList;
     private KaoshiPxAdapter mPxAdapter;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_specialcertification_list);
+        mContext = this;
         sublist = getIntent().getStringExtra("list");
         initView();
         initData();
@@ -52,9 +58,13 @@ public class SpecialcertificationListActivity extends BaseActivity implements Vi
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startActivity(new Intent(SpecialcertificationListActivity.this, KaoshicontentActivity.class).
-                        putExtra("id", mList.get(i).getId()).putExtra("cate", mList.get(i).getIdentifier()).
-                        putExtra("type", "zhuangxiang").putExtra("fen",mList.get(i).getFen()));
+                if (!mList.get(i).isIs_test()) {
+                    startActivity(new Intent(SpecialcertificationListActivity.this, KaoshicontentActivity.class).
+                            putExtra("id", mList.get(i).getId()).putExtra("cate", mList.get(i).getIdentifier()).
+                            putExtra("type", "zhuangxiang").putExtra("fen", mList.get(i).getFen()));
+                } else {
+                    Toast.makeText(mContext, "您当月已做过该试题！", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

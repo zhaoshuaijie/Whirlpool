@@ -12,6 +12,9 @@ import lcsd.com.whirlpool.adapter.MyErrorAdapter;
 import lcsd.com.whirlpool.entity.Kaoshi;
 import lcsd.com.whirlpool.manager.ActivityManager;
 
+/**
+ * 错题展示页面
+ */
 public class MyErrorListActivity extends BaseActivity implements View.OnClickListener {
     private ArrayList<Kaoshi> mList;
     private TextView tv_title;

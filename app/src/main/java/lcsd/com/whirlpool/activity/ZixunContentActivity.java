@@ -37,6 +37,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 新闻详情页
+ */
 public class ZixunContentActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_title;
     private String title, url, id, img;

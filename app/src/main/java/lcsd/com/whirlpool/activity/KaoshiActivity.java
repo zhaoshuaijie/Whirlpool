@@ -19,6 +19,8 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
+import lcsd.com.whirlpool.util.L;
+import lcsd.com.whirlpool.view.MultipleStatusView;
 import lcsd.com.whirlpool.view.ScrollViewWithListView;
 
 import java.util.ArrayList;
@@ -26,10 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 考试页面
+ */
 public class KaoshiActivity extends BaseActivity implements View.OnClickListener {
     private TextView title, tv_suiji, tv_zhuanxiang, tv_bx, tv_xyj;
     private ImageView iv1, iv2, iv_bx, iv_xyj;
     private LinearLayout ll_zx, ll_zx_iv, ll_zhuanxiang;
+    private MultipleStatusView mStatusView;
     private ScrollViewWithListView lv;
     private List<Kaoshifl.TTree.OSublist.TSublist> list;
     private List<Kaoshifl.TTree.OSublist.TSublist> list_xyj;
@@ -59,6 +65,7 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
         tv_zhuanxiang = findViewById(R.id.tv_zhuanxiang);
         iv1 = findViewById(R.id.kaoshi_iv1);
         iv2 = findViewById(R.id.kaoshi_iv2);
+        mStatusView = findViewById(R.id.multiple_status_view);
         tv_zhuanxiang.setOnClickListener(onClickListener);
         tv_suiji.setOnClickListener(onClickListener);
         tv_bx = findViewById(R.id.tv_bx);
@@ -70,6 +77,7 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
         tv_bx.setOnClickListener(onClickListener1);
         tv_xyj.setOnClickListener(onClickListener1);
         lv = findViewById(R.id.lv_ks);
+        mStatusView.showLoading();
     }
 
     private void initData() {
@@ -85,7 +93,17 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(KaoshiActivity.this, KaoshicontentActivity.class).putExtra("id", list.get(i).getId()).putExtra("cate", list.get(i).getIdentifier()).putExtra("type", "rand"));
             }
         });
+        //设置重试视图点击事件
+        mStatusView.setOnRetryClickListener(mRetryClickListener);
     }
+
+    final View.OnClickListener mRetryClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mStatusView.showLoading();
+            requestData();
+        }
+    };
 
     private void requestData() {
         final Map<String, Object> map = new HashMap<>();
@@ -94,42 +112,53 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    Kaoshifl kaoshifl = JSON.parseObject(json, Kaoshifl.class);
-                    //随机测试
-                    if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 0) {
-                        if (kaoshifl.getTree().get(0).getSublist() != null & kaoshifl.getTree().get(0).getSublist().size() > 0) {
-                            if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("洗衣机")) {
-                                if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
-                                    list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                    try {
+                        Kaoshifl kaoshifl = JSON.parseObject(json, Kaoshifl.class);
+                        //随机测试
+                        if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 0) {
+                            if (kaoshifl.getTree().get(0).getSublist() != null & kaoshifl.getTree().get(0).getSublist().size() > 0) {
+                                if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("洗衣机")) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                        list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                                    }
+                                } else if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("冰箱")) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                        list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                                    }
                                 }
-                            } else if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("冰箱")) {
-                                if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
-                                    list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
-                                }
-                            }
-                            if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("洗衣机")) {
-                                if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
-                                    list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
-                                }
-                            } else if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("冰箱")) {
-                                if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
-                                    list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("洗衣机")) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                        list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                    }
+                                } else if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("冰箱")) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                        list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                    }
                                 }
                             }
                         }
-                    }
-                    //专项测试
-                    if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 1) {
-                        if (kaoshifl.getTree().get(1).getSublist() != null && kaoshifl.getTree().get(1).getSublist().size() > 0) {
-                            list_zx.addAll(kaoshifl.getTree().get(1).getSublist());
+                        //专项测试
+                        if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 1) {
+                            if (kaoshifl.getTree().get(1).getSublist() != null && kaoshifl.getTree().get(1).getSublist().size() > 0) {
+                                list_zx.addAll(kaoshifl.getTree().get(1).getSublist());
+                            }
                         }
+                        mStatusView.showContent();
+                    } catch (Exception e) {
+                        mStatusView.showError();
                     }
+                } else {
+                    mStatusView.showEmpty();
                 }
             }
 
             @Override
             public void onFailure(String msg) {
-                Toast.makeText(KaoshiActivity.this, msg, Toast.LENGTH_SHORT).show();
+                try {
+                    mStatusView.showNoNetwork();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

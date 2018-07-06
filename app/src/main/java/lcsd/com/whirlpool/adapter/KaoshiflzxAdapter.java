@@ -14,6 +14,7 @@ import lcsd.com.whirlpool.entity.Kaoshifl;
 
 /**
  * Created by Administrator on 2017/11/8.
+ * 专项测试其他考试列表页
  */
 public class KaoshiflzxAdapter extends BaseAdapter{
     private List<Kaoshifl.TTree.OSublist.TSublist> list;

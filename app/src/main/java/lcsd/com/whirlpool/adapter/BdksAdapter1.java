@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/11.
+ * 产品宝典考试
  */
 public class BdksAdapter1 extends BaseAdapter {
     private List<Kaoshi> list;

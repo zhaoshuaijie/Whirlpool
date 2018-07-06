@@ -14,6 +14,9 @@ import lcsd.com.whirlpool.adapter.KaoshiflzxAdapter;
 import lcsd.com.whirlpool.entity.Kaoshifl;
 import lcsd.com.whirlpool.manager.ActivityManager;
 
+/**
+ * 其他考试页
+ */
 public class SpecialgeneralActivity extends BaseActivity implements View.OnClickListener {
     private TextView title;
     private ListView mListView;
