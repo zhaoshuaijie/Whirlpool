@@ -182,6 +182,15 @@
                         android:gravity="center"
                         android:text="其他考试"
                         android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_xrz"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="2dp"
+                        android:background="@color/color_huise"
+                        android:gravity="center"
+                        android:text="新入职"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

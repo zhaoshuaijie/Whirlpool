@@ -311,7 +311,8 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.tv_jfct:
                 if (isCt) {
-                    startActivity(new Intent(KaoshicontentActivity.this, MyErrorListActivity.class).putExtra("errorlist", list_ct));
+                    startActivity(new Intent(KaoshicontentActivity.this, MyErrorListActivity.class)
+                            .putExtra("errorlist", list_ct));
                 }
                 break;
         }
@@ -387,7 +388,7 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                             tv_right.setVisibility(View.INVISIBLE);
                             tv_tj.setText("关 闭");
                             if (type != null) {
-                                tv_jfct.setText("全部答对，积 " + (int) ((Double.parseDouble(point)) * 10) + " 分！");
+                                tv_jfct.setText("全部答对，积 " + point + " 分！");
                             } else {
                                 if (fen != 0) {
                                     tv_jfct.setText("恭喜您全部答对，通过考核！");
@@ -398,9 +399,9 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                             isCt = false;
                             IsSubmit = false;
                             updatexinxi();
-                        } else {
-                            Toast.makeText(KaoshicontentActivity.this, info, Toast.LENGTH_SHORT).show();
                         }
+                        Toast.makeText(KaoshicontentActivity.this, info, Toast.LENGTH_SHORT).show();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

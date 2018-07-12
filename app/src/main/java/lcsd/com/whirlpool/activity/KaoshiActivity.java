@@ -60,6 +60,7 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.titlebar_home).setOnClickListener(this);
         findViewById(R.id.tv_pxs).setOnClickListener(this);
         findViewById(R.id.tv_qt).setOnClickListener(this);
+        findViewById(R.id.tv_xrz).setOnClickListener(this);
         ll_zhuanxiang = findViewById(R.id.ll_zhuanxiang);
         tv_suiji = findViewById(R.id.tv_suiji);
         tv_zhuanxiang = findViewById(R.id.tv_zhuanxiang);
@@ -90,7 +91,9 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startActivity(new Intent(KaoshiActivity.this, KaoshicontentActivity.class).putExtra("id", list.get(i).getId()).putExtra("cate", list.get(i).getIdentifier()).putExtra("type", "rand"));
+                startActivity(new Intent(KaoshiActivity.this, KaoshicontentActivity.class)
+                        .putExtra("id", list.get(i).getId()).putExtra("cate", list.get(i).getIdentifier())
+                        .putExtra("type", "rand"));
             }
         });
         //设置重试视图点击事件
@@ -118,20 +121,24 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
                         if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 0) {
                             if (kaoshifl.getTree().get(0).getSublist() != null & kaoshifl.getTree().get(0).getSublist().size() > 0) {
                                 if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("洗衣机")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
+                                            kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
                                         list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
                                     }
                                 } else if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("冰箱")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
+                                            kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
                                         list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
                                     }
                                 }
                                 if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("洗衣机")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
+                                            kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
                                         list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
                                     }
                                 } else if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("冰箱")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null && kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
+                                            kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
                                         list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
                                     }
                                 }
@@ -139,7 +146,8 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
                         }
                         //专项测试
                         if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 1) {
-                            if (kaoshifl.getTree().get(1).getSublist() != null && kaoshifl.getTree().get(1).getSublist().size() > 0) {
+                            if (kaoshifl.getTree().get(1).getSublist() != null &&
+                                    kaoshifl.getTree().get(1).getSublist().size() > 0) {
                                 list_zx.addAll(kaoshifl.getTree().get(1).getSublist());
                             }
                         }
@@ -233,14 +241,19 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
             case R.id.titlebar_home:
                 ActivityManager.getActivityManager().finishAll();
                 break;
+            case R.id.tv_pxs:
+                if (list_zx != null) {
+                    startActivity(new Intent(this, SpecialcertificationActivity.class).putExtra("list", list_zx.get(0).getSublist()));
+                }
+                break;
             case R.id.tv_qt:
                 if (list_zx != null) {
                     startActivity(new Intent(this, SpecialgeneralActivity.class).putExtra("list", list_zx.get(1).getSublist()));
                 }
                 break;
-            case R.id.tv_pxs:
+            case R.id.tv_xrz:
                 if (list_zx != null) {
-                    startActivity(new Intent(this, SpecialcertificationActivity.class).putExtra("list", list_zx.get(0).getSublist()));
+                    startActivity(new Intent(this, SpecialgeneralActivity.class).putExtra("list", list_zx.get(2).getSublist()));
                 }
                 break;
         }
