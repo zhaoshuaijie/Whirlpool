@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.activity.BaodianContentActivity;
+import lcsd.com.whirlpool.activity.ShouangActivity;
 import lcsd.com.whirlpool.activity.ZixunContentActivity;
 import lcsd.com.whirlpool.entity.ShouCang;
 import lcsd.com.whirlpool.http.ApiClient;
@@ -120,6 +121,8 @@ public class ScAdapter extends BaseAdapter {
                         if (status == 1) {
                             list.remove(i);
                             notifyDataSetChanged();
+                        }else if(status==2){
+                            ((ShouangActivity)context).ShowAginLoginDialog();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -17,6 +17,7 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -101,6 +102,14 @@ public class Modify_Activity2 extends BaseActivity implements View.OnClickListen
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

@@ -149,14 +149,21 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    SjKaoshi sjKaoshi = JSON.parseObject(json, SjKaoshi.class);
-                    if (sjKaoshi.getTest() != null && sjKaoshi.getTest().size() > 0) {
-                        list.addAll(sjKaoshi.getTest());
-                        point = sjKaoshi.getPoint();
-                        initShiti();
-                        mStatusView.showContent();
-                    } else {
-                        mStatusView.showEmpty();
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        SjKaoshi sjKaoshi = JSON.parseObject(json, SjKaoshi.class);
+                        if (sjKaoshi.getTest() != null && sjKaoshi.getTest().size() > 0) {
+                            list.addAll(sjKaoshi.getTest());
+                            point = sjKaoshi.getPoint();
+                            initShiti();
+                            mStatusView.showContent();
+                        } else {
+                            mStatusView.showEmpty();
+                        }
                     }
                 } else {
                     mStatusView.showError();
@@ -341,7 +348,11 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                         int status = object.getInt("status");
                         String info = object.getString("info");
                         //后续处理
-                        Toast.makeText(KaoshicontentActivity.this, info, Toast.LENGTH_SHORT).show();
+                        if (status == 2) {
+                            ShowAginLoginDialog();
+                        } else {
+                            Toast.makeText(KaoshicontentActivity.this, info, Toast.LENGTH_SHORT).show();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -399,9 +410,10 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
                             isCt = false;
                             IsSubmit = false;
                             updatexinxi();
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
                         }
                         Toast.makeText(KaoshicontentActivity.this, info, Toast.LENGTH_SHORT).show();
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -449,12 +461,23 @@ public class KaoshicontentActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onSuccess(String json) {
                 // L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                if (userInfo != null) {
-                    if (AppContext.getInstance().checkUser()) {
-                        AppContext.getInstance().cleanUserInfo();
+                try {
+                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                    if (userInfo != null) {
+                        if (AppContext.getInstance().checkUser()) {
+                            AppContext.getInstance().cleanUserInfo();
+                        }
+                        AppContext.getInstance().saveUserInfo(userInfo);
                     }
-                    AppContext.getInstance().saveUserInfo(userInfo);
+                } catch (Exception e) {
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 

@@ -9,7 +9,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.alibaba.fastjson.JSON;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.SousuoAdapter;
 import lcsd.com.whirlpool.entity.Shousuo;
@@ -17,10 +22,12 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrDefaultHandler2;
@@ -65,13 +72,13 @@ public class SousuoActivity extends BaseActivity implements View.OnClickListener
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(list.get(i).getProject_name().equals("产品宝典")){
+                if (list.get(i).getProject_name().equals("产品宝典")) {
                     startActivity(new Intent(SousuoActivity.this, BaodianContentActivity.class).
                             putExtra("id", list.get(i).getId()).putExtra("title", list.get(i).getTitle()));
-                }else {
+                } else {
                     startActivity(new Intent(SousuoActivity.this, ZixunContentActivity.class).
                             putExtra("id", list.get(i).getId()).putExtra("title", list.get(i).getTitle()).
-                            putExtra("url",list.get(i).getUrl()).putExtra("img",list.get(i).getThumb()));
+                            putExtra("url", list.get(i).getUrl()).putExtra("img", list.get(i).getThumb()));
                 }
             }
         });
@@ -151,8 +158,8 @@ public class SousuoActivity extends BaseActivity implements View.OnClickListener
                 return;
             }
         }
-        if(i==1){
-            pageid=1;
+        if (i == 1) {
+            pageid = 1;
         }
         Map<String, Object> map = new HashMap<>();
         map.put("c", "search");
@@ -162,19 +169,30 @@ public class SousuoActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    Shousuo shousuo = JSON.parseObject(json, Shousuo.class);
-                    if (shousuo.getRslist() != null && shousuo.getRslist().size() > 0) {
-                        total = shousuo.getTotal();
-                        if ((i == 1||i==0)&&list!=null) {
-                            list.clear();
+                    try {
+                        Shousuo shousuo = JSON.parseObject(json, Shousuo.class);
+                        if (shousuo.getRslist() != null && shousuo.getRslist().size() > 0) {
+                            total = shousuo.getTotal();
+                            if ((i == 1 || i == 0) && list != null) {
+                                list.clear();
+                            }
+                            list.addAll(shousuo.getRslist());
+                            adapter.notifyDataSetChanged();
+                            if (i == 1 || i == 2) {
+                                ptrClassicFrameLayout.refreshComplete();
+                            }
+                        } else {
+                            Toast.makeText(SousuoActivity.this, "无该相关产品，换个关键词试试！", Toast.LENGTH_SHORT).show();
                         }
-                        list.addAll(shousuo.getRslist());
-                        adapter.notifyDataSetChanged();
-                        if (i == 1 || i == 2) {
-                            ptrClassicFrameLayout.refreshComplete();
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
-                    } else {
-                        Toast.makeText(SousuoActivity.this, "无该相关产品，换个关键词试试！", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

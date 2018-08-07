@@ -177,6 +177,8 @@ public class ZixunContentActivity extends BaseActivity implements View.OnClickLi
                         String info = object.getString("info");
                         if (status == 1) {
                             like(iv_sc);
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
                         }
                         Toast.makeText(ZixunContentActivity.this, info, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
@@ -209,6 +211,8 @@ public class ZixunContentActivity extends BaseActivity implements View.OnClickLi
                         if (status == 1) {
                             iv_sc.setImageResource(R.drawable.img_collection);
                             istrue = false;
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
                         }
                         Toast.makeText(ZixunContentActivity.this, info, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
@@ -336,6 +340,8 @@ public class ZixunContentActivity extends BaseActivity implements View.OnClickLi
                         if (status == 1) {
                             iv_sc.setImageResource(R.drawable.img_collection_red);
                             istrue = true;
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
                         } else {
                             iv_sc.setImageResource(R.drawable.img_collection);
                             istrue = false;

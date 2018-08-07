@@ -1,26 +1,35 @@
 package lcsd.com.whirlpool.activity;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import lcsd.com.whirlpool.R;
+import lcsd.com.whirlpool.http.AppContext;
 import lcsd.com.whirlpool.manager.ActivityManager;
+import me.leefeng.promptlibrary.PromptDialog;
 
 
 /**
  * Created by Administrator on 2017/6/22.
  */
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
     private LinearLayout ll_content;
-
+    private Context mContext;
 
     //手指上下滑动时的最小速度
     private static final int YSPEED_MIN = 1000;
@@ -48,7 +57,7 @@ public class BaseActivity extends AppCompatActivity{
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if(isSupportSwipeBack()){
+        if (isSupportSwipeBack()) {
             createVelocityTracker(event);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -57,17 +66,17 @@ public class BaseActivity extends AppCompatActivity{
                     break;
                 case MotionEvent.ACTION_MOVE:
                     xMove = event.getRawX();
-                    yMove= event.getRawY();
+                    yMove = event.getRawY();
                     //滑动的距离
                     int distanceX = (int) (xMove - xDown);
-                    int distanceY= (int) (yMove - yDown);
+                    int distanceY = (int) (yMove - yDown);
                     //获取顺时速度
                     int ySpeed = getScrollVelocity();
                     //关闭Activity需满足以下条件：
                     //1.x轴滑动的距离>XDISTANCE_MIN
                     //2.y轴滑动的距离在YDISTANCE_MIN范围内
                     //3.y轴上（即上下滑动的速度）<XSPEED_MIN，如果大于，则认为用户意图是在上下滑动而非左滑结束Activity
-                    if(distanceX > XDISTANCE_MIN &&(distanceY<YDISTANCE_MIN&&distanceY>-YDISTANCE_MIN)&& ySpeed < YSPEED_MIN) {
+                    if (distanceX > XDISTANCE_MIN && (distanceY < YDISTANCE_MIN && distanceY > -YDISTANCE_MIN) && ySpeed < YSPEED_MIN) {
                         finish();
                     }
                     break;
@@ -85,7 +94,6 @@ public class BaseActivity extends AppCompatActivity{
      * 创建VelocityTracker对象，并将触摸界面的滑动事件加入到VelocityTracker当中。
      *
      * @param event
-     *
      */
     private void createVelocityTracker(MotionEvent event) {
         if (mVelocityTracker == null) {
@@ -103,7 +111,6 @@ public class BaseActivity extends AppCompatActivity{
     }
 
     /**
-     *
      * @return 滑动速度，以每秒钟移动了多少像素值为单位。
      */
     private int getScrollVelocity() {
@@ -128,6 +135,7 @@ public class BaseActivity extends AppCompatActivity{
         ActivityManager.getActivityManager().addActivity(this);
         super.onCreate(savedInstanceState);
         setSystemBarTransparent();
+        mContext = this;
     }
 
     @Override
@@ -135,6 +143,7 @@ public class BaseActivity extends AppCompatActivity{
         ActivityManager.getActivityManager().removeActivity(this);
         super.onDestroy();
     }
+
     private void setSystemBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // LOLLIPOP解决方案
@@ -155,5 +164,30 @@ public class BaseActivity extends AppCompatActivity{
         config.setToDefaults();
         res.updateConfiguration(config, res.getDisplayMetrics());
         return res;
+    }
+
+    public void ShowAginLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                mContext,
+                android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setMessage("该账号已在其他设备登陆！");
+        builder.setPositiveButton("重新登录",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppContext.getInstance().cleanUserInfo();
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("HuierpuUser", mContext.MODE_PRIVATE);
+                        SharedPreferences.Editor usereditor = sharedPreferences.edit();
+                        usereditor.putString("token", "");
+                        usereditor.commit();
+                        AppContext.token=null;
+                        ActivityManager.finishAll();
+                        MainActivity.mMainActivity.finish();
+                        startActivity(new Intent(mContext, LoginActivity.class));
+                    }
+                });
+        builder.setCancelable(false);//设置不可点击back关闭dialog
+        builder.show();
     }
 }

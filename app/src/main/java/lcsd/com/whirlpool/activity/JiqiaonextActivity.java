@@ -7,7 +7,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.alibaba.fastjson.JSON;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrDefaultHandler2;
@@ -28,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JiqiaonextActivity extends BaseActivity implements View.OnClickListener,AdapterView.OnItemClickListener {
+public class JiqiaonextActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private TextView tv_title, tv1, tv2;
     private ListView lv;
     private MyAdapter adapter;
@@ -114,21 +119,29 @@ public class JiqiaonextActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    Jiqiao jiqiao = JSON.parseObject(json, Jiqiao.class);
-                    if (jiqiao.getTree().get(index) != null) {
-                        if (jiqiao.getTree().get(index).getSublist() != null && jiqiao.getTree().get(index).getSublist().size() > 0 && jiqiao.getTree().get(index).getSublist().get(0).getUrl() != null && jiqiao.getTree().get(index).getSublist().get(0).getUrl().length() > 0) {
-                            url1 = jiqiao.getTree().get(index).getSublist().get(0).getUrl();
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
                         }
-                        if (jiqiao.getTree().get(index).getSublist() != null && jiqiao.getTree().get(index).getSublist().size() > 0 && jiqiao.getTree().get(index).getSublist().get(1).getUrl() != null && jiqiao.getTree().get(index).getSublist().get(1).getUrl().length() > 0) {
-                            url2 = jiqiao.getTree().get(index).getSublist().get(1).getUrl();
-                        }
-                        if (isxiyiji) {
-                            requestData(1, url1);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                        Jiqiao jiqiao = JSON.parseObject(json, Jiqiao.class);
+                        if (jiqiao.getTree().get(index) != null) {
+                            if (jiqiao.getTree().get(index).getSublist() != null && jiqiao.getTree().get(index).getSublist().size() > 0 && jiqiao.getTree().get(index).getSublist().get(0).getUrl() != null && jiqiao.getTree().get(index).getSublist().get(0).getUrl().length() > 0) {
+                                url1 = jiqiao.getTree().get(index).getSublist().get(0).getUrl();
+                            }
+                            if (jiqiao.getTree().get(index).getSublist() != null && jiqiao.getTree().get(index).getSublist().size() > 0 && jiqiao.getTree().get(index).getSublist().get(1).getUrl() != null && jiqiao.getTree().get(index).getSublist().get(1).getUrl().length() > 0) {
+                                url2 = jiqiao.getTree().get(index).getSublist().get(1).getUrl();
+                            }
+                            if (isxiyiji) {
+                                requestData(1, url1);
+                            } else {
+                                requestData(1, url2);
+                            }
                         } else {
-                            requestData(1, url2);
+                            mStatusView.showEmpty();
                         }
-                    } else {
-                        mStatusView.showEmpty();
                     }
                 } else {
                     mStatusView.showError();
@@ -168,20 +181,27 @@ public class JiqiaonextActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    JiqiaoNext jq = JSON.parseObject(json, JiqiaoNext.class);
-                    total = jq.getTotal();
-                    if (jq.getRslist() != null && jq.getRslist().size() != 0) {
-                        if (i == 1) {
-                            list.clear();
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
                         }
-                        list.addAll(jq.getRslist());
-                        adapter.notifyDataSetChanged();
-                        mStatusView.showContent();
-                    } else {
-                        mStatusView.showEmpty();
-                    }
-                    if (i == 1 || i == 2) {
-                        mPtr.refreshComplete();
+                    } catch (JSONException e1) {
+                        JiqiaoNext jq = JSON.parseObject(json, JiqiaoNext.class);
+                        total = jq.getTotal();
+                        if (jq.getRslist() != null && jq.getRslist().size() != 0) {
+                            if (i == 1) {
+                                list.clear();
+                            }
+                            list.addAll(jq.getRslist());
+                            adapter.notifyDataSetChanged();
+                            mStatusView.showContent();
+                        } else {
+                            mStatusView.showEmpty();
+                        }
+                        if (i == 1 || i == 2) {
+                            mPtr.refreshComplete();
+                        }
                     }
                 } else {
                     mStatusView.showError();

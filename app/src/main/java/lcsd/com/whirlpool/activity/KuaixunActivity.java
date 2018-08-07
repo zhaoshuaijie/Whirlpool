@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.KuaixunAdapter;
 import lcsd.com.whirlpool.entity.Kuaixun;
@@ -117,17 +120,24 @@ public class KuaixunActivity extends BaseActivity implements View.OnClickListene
             public void onSuccess(String json) {
                 if (json != null) {
                     L.d("成交秘籍", json);
-                    kuaixun = JSON.parseObject(json, Kuaixun.class);
-                    total = kuaixun.getTotal();
-                    if (kuaixun.getRslist() != null && kuaixun.getRslist().size() != 0) {
-                        if (i == 1) {
-                            list.clear();
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
                         }
-                        list.addAll(kuaixun.getRslist());
-                        adapter.notifyDataSetChanged();
-                    }
-                    if (i == 1 || i == 2) {
-                        ptrClassicFrameLayout.refreshComplete();
+                    } catch (JSONException e1) {
+                        kuaixun = JSON.parseObject(json, Kuaixun.class);
+                        total = kuaixun.getTotal();
+                        if (kuaixun.getRslist() != null && kuaixun.getRslist().size() != 0) {
+                            if (i == 1) {
+                                list.clear();
+                            }
+                            list.addAll(kuaixun.getRslist());
+                            adapter.notifyDataSetChanged();
+                        }
+                        if (i == 1 || i == 2) {
+                            ptrClassicFrameLayout.refreshComplete();
+                        }
                     }
                 }
             }

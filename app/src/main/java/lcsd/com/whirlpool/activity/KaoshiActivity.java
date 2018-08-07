@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.KaoshiflAdapter;
 import lcsd.com.whirlpool.adapter.KaoshiflzxAdapter;
@@ -116,44 +119,51 @@ public class KaoshiActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(String json) {
                 if (json != null) {
                     try {
-                        Kaoshifl kaoshifl = JSON.parseObject(json, Kaoshifl.class);
-                        //随机测试
-                        if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 0) {
-                            if (kaoshifl.getTree().get(0).getSublist() != null & kaoshifl.getTree().get(0).getSublist().size() > 0) {
-                                if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("洗衣机")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
-                                            kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
-                                        list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        try {
+                            Kaoshifl kaoshifl = JSON.parseObject(json, Kaoshifl.class);
+                            //随机测试
+                            if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 0) {
+                                if (kaoshifl.getTree().get(0).getSublist() != null & kaoshifl.getTree().get(0).getSublist().size() > 0) {
+                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("洗衣机")) {
+                                        if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
+                                                kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                            list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                                        }
+                                    } else if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("冰箱")) {
+                                        if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
+                                                kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
+                                            list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
+                                        }
                                     }
-                                } else if (kaoshifl.getTree().get(0).getSublist().get(0).getTitle().equals("冰箱")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(0).getSublist() != null &&
-                                            kaoshifl.getTree().get(0).getSublist().get(0).getSublist().size() > 0) {
-                                        list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(0).getSublist());
-                                    }
-                                }
-                                if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("洗衣机")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
-                                            kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
-                                        list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
-                                    }
-                                } else if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("冰箱")) {
-                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
-                                            kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
-                                        list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                    if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("洗衣机")) {
+                                        if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
+                                                kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                            list_xyj.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                        }
+                                    } else if (kaoshifl.getTree().get(0).getSublist().get(1).getTitle().equals("冰箱")) {
+                                        if (kaoshifl.getTree().get(0).getSublist().get(1).getSublist() != null &&
+                                                kaoshifl.getTree().get(0).getSublist().get(1).getSublist().size() > 0) {
+                                            list_bx.addAll(kaoshifl.getTree().get(0).getSublist().get(1).getSublist());
+                                        }
                                     }
                                 }
                             }
-                        }
-                        //专项测试
-                        if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 1) {
-                            if (kaoshifl.getTree().get(1).getSublist() != null &&
-                                    kaoshifl.getTree().get(1).getSublist().size() > 0) {
-                                list_zx.addAll(kaoshifl.getTree().get(1).getSublist());
+                            //专项测试
+                            if (kaoshifl != null && kaoshifl.getTree() != null && kaoshifl.getTree().size() > 1) {
+                                if (kaoshifl.getTree().get(1).getSublist() != null &&
+                                        kaoshifl.getTree().get(1).getSublist().size() > 0) {
+                                    list_zx.addAll(kaoshifl.getTree().get(1).getSublist());
+                                }
                             }
+                            mStatusView.showContent();
+                        } catch (Exception e) {
+                            mStatusView.showError();
                         }
-                        mStatusView.showContent();
-                    } catch (Exception e) {
-                        mStatusView.showError();
                     }
                 } else {
                     mStatusView.showEmpty();

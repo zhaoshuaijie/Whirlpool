@@ -7,7 +7,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.alibaba.fastjson.JSON;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.ZhiboAdapter;
 import lcsd.com.whirlpool.entity.Zhibo;
@@ -16,6 +21,7 @@ import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
 import lcsd.com.whirlpool.util.L;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,26 +116,37 @@ public class ZhiboActivity extends BaseActivity implements View.OnClickListener 
         if (i == 1) {
             pageid = 1;
         }
-        final Map<String,Object> map=new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("id", "live");
-        map.put("cate","zhibo");
+        map.put("cate", "zhibo");
         map.put("pageid", pageid + "");
         map.put("psize", "10");
         ApiClient.requestNetHandle(this, AppConfig.Sy, "", map, new ResultListener() {
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    Zhibo zhibo = JSON.parseObject(json, Zhibo.class);
-                    total = zhibo.getTotal();
-                    if (zhibo.getRslist() != null && zhibo.getRslist().size() > 0) {
-                        if (i == 1) {
-                            list.clear();
+                    try {
+                        Zhibo zhibo = JSON.parseObject(json, Zhibo.class);
+                        total = zhibo.getTotal();
+                        if (zhibo.getRslist() != null && zhibo.getRslist().size() > 0) {
+                            if (i == 1) {
+                                list.clear();
+                            }
+                            list.addAll(zhibo.getRslist());
+                            adapter.notifyDataSetChanged();
                         }
-                        list.addAll(zhibo.getRslist());
-                        adapter.notifyDataSetChanged();
-                    }
-                    if (i == 1 || i == 2) {
-                        ptrClassicFrameLayout.refreshComplete();
+                        if (i == 1 || i == 2) {
+                            ptrClassicFrameLayout.refreshComplete();
+                        }
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

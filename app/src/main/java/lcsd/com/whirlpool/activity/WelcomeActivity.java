@@ -44,24 +44,19 @@ public class  WelcomeActivity extends AppCompatActivity {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
-        SharedPreferences userpreferences = getSharedPreferences("HuierpuUser", MODE_PRIVATE);
-        if (userpreferences.getString("userid", "") != null && userpreferences.getString("userid", "").toString().length() > 1 && userpreferences.getString("pwd", "") != null && userpreferences.getString("pwd", "").toString().length() > 1) {
+        if(AppContext.token!=null){
             islogin = true;
-            request_logo(userpreferences.getString("userid", "").toString(), userpreferences.getString("pwd", "").toString());
-        } else {
+        }else {
             islogin = false;
-            initView();
         }
-
+        initView();
         context = this;
-
     }
 
 
     private void initView() {
-        progressBar = (ProgressBar) findViewById(R.id.pb_welcome);
-        textview = (TextView) findViewById(R.id.tv_wel);
+        progressBar =  findViewById(R.id.pb_welcome);
+        textview =  findViewById(R.id.tv_wel);
         start();
     }
 
@@ -117,56 +112,5 @@ public class  WelcomeActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void request_logo(String s1, String s2) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("c", "login");
-        map.put("mobile", s1);
-        map.put("pass", s2);
-        ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                if (json != null) {
-                    L.d("登录状态：------------", json);
-                    try {
-                        JSONObject object = new JSONObject(json);
-                        String info = object.getString("info");
-                        int status = object.getInt("status");
-                        String url = object.getString("url");
-                        if (status == 1) {
-                            initView();
-                            requestLUserInfo();
-                        } else {
-                            Toast.makeText(context, "登录异常：" + info, Toast.LENGTH_SHORT).show();
-                            initView();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "系统异常：", Toast.LENGTH_SHORT).show();
-                        initView();
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(String msg) {
-                initView();
-            }
-        });
-    }
-
-    private void requestLUserInfo() {
-        ApiClient.requestNetHandle(context, AppConfig.Sy + "?c=usercp", "", null, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                AppContext.getInstance().saveUserInfo(userInfo);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                L.d("个人信息异常：---", msg);
-            }
-        });
-    }
 }

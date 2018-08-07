@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
 import lcsd.com.whirlpool.R;
+import lcsd.com.whirlpool.activity.MainActivity;
 import lcsd.com.whirlpool.activity.ShouangActivity;
 import lcsd.com.whirlpool.adapter.ScListAdapter;
 import lcsd.com.whirlpool.entity.ScList;
@@ -146,7 +147,14 @@ public class Fragment03 extends Fragment {
                         mStatusView.showContent();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        request_logo(AppContext.phone, AppContext.pwd);
+                        try {
+                            JSONObject object=new JSONObject(json);
+                            if(object.getString("status").equals("2")){
+                                ((MainActivity)getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 } else {
                     mStatusView.showError();
@@ -160,57 +168,6 @@ public class Fragment03 extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        });
-    }
-
-    private void request_logo(String s1, String s2) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("c", "login");
-        map.put("mobile", s1);
-        map.put("pass", s2);
-        ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                if (json != null) {
-                    L.d("登录状态：------------", json);
-                    try {
-                        JSONObject object = new JSONObject(json);
-                        String info = object.getString("info");
-                        int status = object.getInt("status");
-                        String url = object.getString("url");
-                        if (status == 1) {
-                            requestLUserInfo();
-                        } else {
-                            Toast.makeText(context, "登录状态异常：" + info, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "系统异常：", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                initView();
-            }
-        });
-    }
-
-    private void requestLUserInfo() {
-        ApiClient.requestNetHandle(context, AppConfig.Sy + "?c=usercp", "", null, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                AppContext.getInstance().saveUserInfo(userInfo);
-                request_scfl(1);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                L.d("个人信息异常：---", msg);
             }
         });
     }

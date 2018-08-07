@@ -192,6 +192,14 @@ public class BaodianContentActivity extends BaseActivity implements View.OnClick
                     } catch (JSONException e) {
                         e.printStackTrace();
                         loadingDialog.dismiss();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
@@ -243,8 +251,11 @@ public class BaodianContentActivity extends BaseActivity implements View.OnClick
                         String info = object.getString("info");
                         if (status == 1) {
                             like(iv_sc);
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
+                        } else {
+                            Toast.makeText(BaodianContentActivity.this, info, Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(BaodianContentActivity.this, info, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -274,8 +285,11 @@ public class BaodianContentActivity extends BaseActivity implements View.OnClick
                         if (status == 1) {
                             iv_sc.setImageResource(R.drawable.img_collection);
                             istrue = false;
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
+                        } else {
+                            Toast.makeText(BaodianContentActivity.this, info, Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(BaodianContentActivity.this, info, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -494,6 +508,8 @@ public class BaodianContentActivity extends BaseActivity implements View.OnClick
                         if (status == 1) {
                             iv_sc.setImageResource(R.drawable.img_collection_red);
                             istrue = true;
+                        } else if (status == 2) {
+                            ShowAginLoginDialog();
                         } else {
                             iv_sc.setImageResource(R.drawable.img_collection);
                             istrue = false;

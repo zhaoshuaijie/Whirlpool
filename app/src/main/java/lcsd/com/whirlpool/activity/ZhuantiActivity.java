@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.ZhuantiAdapter;
 import lcsd.com.whirlpool.entity.Zhuanti;
@@ -89,14 +92,21 @@ public class ZhuantiActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    list1 = JSON.parseArray(json, Zhuanti.class);
-                    if (i == 1) {
-                        list.clear();
-                    }
-                    list.addAll(list1);
-                    adapter.notifyDataSetChanged();
-                    if (i == 1) {
-                        ptrClassicFrameLayout.refreshComplete();
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        list1 = JSON.parseArray(json, Zhuanti.class);
+                        if (i == 1) {
+                            list.clear();
+                        }
+                        list.addAll(list1);
+                        adapter.notifyDataSetChanged();
+                        if (i == 1) {
+                            ptrClassicFrameLayout.refreshComplete();
+                        }
                     }
                 }
             }
@@ -136,8 +146,14 @@ public class ZhuantiActivity extends BaseActivity implements View.OnClickListene
                             startActivity(new Intent(ZhuantiActivity.this, Zhuanti3Activity.class).putExtra("title", title).putExtra("cid", cid).putExtra("cate", cate));
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        startActivity(new Intent(ZhuantiActivity.this, Zhuanti3Activity.class).putExtra("title", title).putExtra("cid", cid).putExtra("cate", cate));
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            startActivity(new Intent(ZhuantiActivity.this, Zhuanti3Activity.class).putExtra("title", title).putExtra("cid", cid).putExtra("cate", cate));
+                        }
                     }
                 } else {
                     startActivity(new Intent(ZhuantiActivity.this, Zhuanti3Activity.class).putExtra("title", title).putExtra("cid", cid).putExtra("cate", cate));

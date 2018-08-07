@@ -53,9 +53,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initYzm();
 
         initView();
-        SharedPreferences userpreferences = getSharedPreferences("HuierpuUser", MODE_PRIVATE);
-        login_phone.setText(userpreferences.getString("userid", ""));
-        login_code.setText(userpreferences.getString("pwd", ""));
     }
 
     @Override
@@ -186,14 +183,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         JSONObject object = new JSONObject(json);
                         String info = object.getString("info");
                         int status = object.getInt("status");
-                        String url = object.getString("url");
-                        if (status == 1) {
+                        String token=object.getString("token");
+                        if (status == 1&&token!=null) {
                             Toast.makeText(context, "登陆成功", Toast.LENGTH_SHORT).show();
                             SharedPreferences sharedPreferences = getSharedPreferences("HuierpuUser", MODE_PRIVATE);
                             SharedPreferences.Editor usereditor = sharedPreferences.edit();
-                            usereditor.putString("userid", login_phone.getText().toString());
-                            usereditor.putString("pwd", login_code.getText().toString());
+                            usereditor.putString("token", token);
                             usereditor.commit();
+                            AppContext.token=token;
                             requestLUserInfo();
                         } else {
                             Toast.makeText(context, "登陆失败：" + info, Toast.LENGTH_SHORT).show();
@@ -212,22 +209,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void requestLUserInfo() {
-        ApiClient.requestNetHandle(context, AppConfig.Sy + "?c=usercp", "", null, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                AppContext.getInstance().saveUserInfo(userInfo);
-                startActivity(new Intent(context, MainActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                LoginActivity.this.finish();
-            }
+        if(AppContext.token!=null){
+            HashMap<String,Object> map=new HashMap<>();
+            map.put("c","usercp");
+            map.put("token",AppContext.token);
+            ApiClient.requestNetHandle(context, AppConfig.Sy , "", map, new ResultListener() {
+                @Override
+                public void onSuccess(String json) {
+                    L.d("个人信息--------", json);
+                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                    AppContext.getInstance().saveUserInfo(userInfo);
+                    startActivity(new Intent(context, MainActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    LoginActivity.this.finish();
+                }
 
-            @Override
-            public void onFailure(String msg) {
-                L.d("个人信息异常：---", msg);
-            }
-        });
+                @Override
+                public void onFailure(String msg) {
+                    L.d("个人信息异常：---", msg);
+                }
+            });
+        }
     }
 
     @Override

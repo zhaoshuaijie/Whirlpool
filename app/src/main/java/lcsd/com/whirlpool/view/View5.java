@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+
 import lcsd.com.whirlpool.R;
+import lcsd.com.whirlpool.activity.BaodianContentActivity;
 import lcsd.com.whirlpool.adapter.BdksAdapter;
 import lcsd.com.whirlpool.adapter.BdksAdapter1;
 import lcsd.com.whirlpool.entity.Kaoshi;
@@ -49,21 +51,21 @@ public class View5 extends FrameLayout implements View.OnClickListener {
     private ScrollView sc;
     private List<Kaoshi1> list;
     private boolean is_test;
-    private String id,point;
+    private String id, point;
 
-    public static View5 getInstance(Context context, boolean is_test, List<Kaoshi1> list, String id,String point) {
+    public static View5 getInstance(Context context, boolean is_test, List<Kaoshi1> list, String id, String point) {
         if (view5 == null)
-            return new View5(context, is_test, list, id,point);
+            return new View5(context, is_test, list, id, point);
         return view5;
     }
 
-    public View5(Context context, boolean is_test, List<Kaoshi1> list, String id,String point) {
+    public View5(Context context, boolean is_test, List<Kaoshi1> list, String id, String point) {
         super(context);
         this.context = context;
         this.is_test = is_test;
         this.list = list;
         this.id = id;
-        this.point=point;
+        this.point = point;
         LayoutInflater.from(context).inflate(R.layout.view5, this);
         initView();
         initData();
@@ -76,7 +78,7 @@ public class View5 extends FrameLayout implements View.OnClickListener {
         iv = (ImageView) findViewById(R.id.view5_iv);
         ll = (LinearLayout) findViewById(R.id.view5_llall);
         tv_jf = (TextView) findViewById(R.id.view5_tvjf);
-        tv_jf.setText("积 "+point+" 分");
+        tv_jf.setText("积 " + point + " 分");
         sc = (ScrollView) findViewById(R.id.view5_sc);
     }
 
@@ -85,46 +87,46 @@ public class View5 extends FrameLayout implements View.OnClickListener {
         list2 = new ArrayList<>();
         adapter = new BdksAdapter(list1, context);
         lv.setAdapter(adapter);
-            //已做
+        //已做
            /* lv.setVisibility(GONE);
             tv_tj.setVisibility(GONE);
             iv.setVisibility(VISIBLE);
             iv.setImageResource(R.drawable.img_ddl);
             tv_jf.setVisibility(VISIBLE);*/
 
-            if (list != null&&list.size()>0) {
-                tv_tj.setVisibility(VISIBLE);
-                for (int i = 0; i < list.size(); i++) {
-                    Kaoshi kaoshi = new Kaoshi();
-                    kaoshi.setImg(list.get(i).getThumb());
-                    kaoshi.setTimu(i + 1 + ". " + list.get(i).getTitle());
-                    kaoshi.setCorrect(list.get(i).getKeys());
-                    try {
-                        kaoshi.setA(list.get(i).getOption().get(0).getCnt());
-                    } catch (Exception e) {
-                        kaoshi.setA("   ");
-                    }
-                    try {
-                        kaoshi.setB(list.get(i).getOption().get(1).getCnt());
-                    } catch (Exception e) {
-                        kaoshi.setB("   ");
-                    }
-                    try {
-                        kaoshi.setC(list.get(i).getOption().get(2).getCnt());
-                    } catch (Exception e) {
-                        kaoshi.setC("   ");
-                    }
-                    try {
-                        kaoshi.setD(list.get(i).getOption().get(3).getCnt());
-                    } catch (Exception e) {
-                        kaoshi.setD("   ");
-                    }
-                    list1.add(kaoshi);
+        if (list != null && list.size() > 0) {
+            tv_tj.setVisibility(VISIBLE);
+            for (int i = 0; i < list.size(); i++) {
+                Kaoshi kaoshi = new Kaoshi();
+                kaoshi.setImg(list.get(i).getThumb());
+                kaoshi.setTimu(i + 1 + ". " + list.get(i).getTitle());
+                kaoshi.setCorrect(list.get(i).getKeys());
+                try {
+                    kaoshi.setA(list.get(i).getOption().get(0).getCnt());
+                } catch (Exception e) {
+                    kaoshi.setA("   ");
                 }
-                adapter.notifyDataSetChanged();
-            }else {
-                tv_tj.setVisibility(GONE);
+                try {
+                    kaoshi.setB(list.get(i).getOption().get(1).getCnt());
+                } catch (Exception e) {
+                    kaoshi.setB("   ");
+                }
+                try {
+                    kaoshi.setC(list.get(i).getOption().get(2).getCnt());
+                } catch (Exception e) {
+                    kaoshi.setC("   ");
+                }
+                try {
+                    kaoshi.setD(list.get(i).getOption().get(3).getCnt());
+                } catch (Exception e) {
+                    kaoshi.setD("   ");
+                }
+                list1.add(kaoshi);
             }
+            adapter.notifyDataSetChanged();
+        } else {
+            tv_tj.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -148,13 +150,13 @@ public class View5 extends FrameLayout implements View.OnClickListener {
                 ll.setBackgroundResource(R.color.gray4);
                 sc.fullScroll(View.FOCUS_UP);
             } else {
-                if(is_test){
+                if (is_test) {
                     //已做显示答对，但是不积分
                     lv.setVisibility(GONE);
                     tv_tj.setVisibility(GONE);
                     iv.setVisibility(VISIBLE);
                     iv.setImageResource(R.drawable.img_ddl);
-                }else {
+                } else {
                     request_tijiao();
                 }
             }
@@ -192,9 +194,11 @@ public class View5 extends FrameLayout implements View.OnClickListener {
                             tv_tj.setVisibility(GONE);
                             iv.setVisibility(VISIBLE);
                             iv.setImageResource(R.drawable.img_ddl);
-                            tv_jf.setText("积 "+point+" 分");
+                            tv_jf.setText("积 " + point + " 分");
                             tv_jf.setVisibility(VISIBLE);
                             updatexinxi();
+                        } else if (status == 2) {
+                            ((BaodianContentActivity) context).ShowAginLoginDialog();
                         } else {
                             Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
                         }
@@ -210,23 +214,35 @@ public class View5 extends FrameLayout implements View.OnClickListener {
             }
         });
     }
-    private void updatexinxi(){
+
+    private void updatexinxi() {
         ApiClient.requestNetHandle(context, AppConfig.Sy + "?c=usercp", "", null, new ResultListener() {
             @Override
             public void onSuccess(String json) {
                 L.d("个人信息--------", json);
-                UserInfo userInfo= JSON.parseObject(json,UserInfo.class);
-                if(userInfo!=null){
-                    if(AppContext.getInstance().checkUser()){
-                        AppContext.getInstance().cleanUserInfo();
+                try {
+                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                    if (userInfo != null) {
+                        if (AppContext.getInstance().checkUser()) {
+                            AppContext.getInstance().cleanUserInfo();
+                        }
+                        AppContext.getInstance().saveUserInfo(userInfo);
                     }
-                    AppContext.getInstance().saveUserInfo(userInfo);
+                } catch (Exception e) {
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ((BaodianContentActivity) context).ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(String msg) {
-                L.d("个人信息异常：---",msg);
+                L.d("个人信息异常：---", msg);
             }
         });
     }

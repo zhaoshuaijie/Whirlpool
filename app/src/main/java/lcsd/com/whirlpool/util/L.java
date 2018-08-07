@@ -10,7 +10,7 @@ public class L {
     /**
      * DEBUG开关
      */
-    public static boolean isDebug = true;
+    public static boolean isDebug = false;
 
     private final static String TAG = "TAG";
 

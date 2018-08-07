@@ -1,6 +1,9 @@
 package lcsd.com.whirlpool.activity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -11,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,20 +31,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import lcsd.com.whirlpool.R;
-import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.http.AppContext;
-import lcsd.com.whirlpool.listener.ResultListener;
+import lcsd.com.whirlpool.manager.ActivityManager;
 import lcsd.com.whirlpool.manager.UpdateManager;
-import lcsd.com.whirlpool.util.L;
 import lcsd.com.whirlpool.view.CircleImageView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_nc, tv_gx, tv_jf, tv_tx, tv_bb;
     private EditText et_ss;
     private String versionname;
+    public static MainActivity mMainActivity;
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         setSystemBarTransparent();
 
+        mMainActivity = this;
         new UpdateManager(this);
         try {
             versionname = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
@@ -83,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+        mContext = this;
         initData();
         initView();
     }
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFragment[3] = this.mFragmentManager.findFragmentById(R.id.ll_frag_03);
         mFragment[4] = this.mFragmentManager.findFragmentById(R.id.ll_frag_04);
         mFragment[5] = this.mFragmentManager.findFragmentById(R.id.ll_frag_05);
-         mFragment[6] = this.mFragmentManager.findFragmentById(R.id.ll_frag_06);
+        mFragment[6] = this.mFragmentManager.findFragmentById(R.id.ll_frag_06);
         mFragmentTransaction = mFragmentManager.beginTransaction()
                 .hide(mFragment[0]).hide(mFragment[1]).hide(mFragment[2]).hide(mFragment[3]).hide(mFragment[4]).hide(mFragment[5]).hide(mFragment[6]);
         mFragmentTransaction.show(mFragment[0]).commit();
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mFragmentTransaction = mFragmentManager.beginTransaction()
                     .hide(mFragment[0]).hide(mFragment[1]).hide(mFragment[2])
                     .hide(mFragment[3]).hide(mFragment[4]).hide(mFragment[5])
-            .hide(mFragment[6]);
+                    .hide(mFragment[6]);
             ll_menu1.setBackgroundResource(R.color.yellow);
             ll_menu2.setBackgroundResource(R.color.yellow);
             ll_menu3.setBackgroundResource(R.color.yellow);
@@ -290,36 +290,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        requestlogout();
         super.onDestroy();
     }
 
-    private void requestlogout() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("c", "logout");
-        ApiClient.requestNetHandle(this, AppConfig.Sy, "", map, new ResultListener() {
-            @Override
-            public void onSuccess(String json) {
-                if (json != null) {
-                    L.d("退出登录-----------", json);
-                    try {
-                        JSONObject object = new JSONObject(json);
-                        int status = object.getInt("status");
-                        if (status == 1) {
-                            AppContext.getInstance().cleanUserInfo();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-
-            }
-        });
-    }
 
     //保证app字体不受系统字体影响
     @Override
@@ -342,5 +315,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // KITKAT解决方案
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
+    }
+
+    public void ShowAginLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                this,
+                android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setMessage("该账号已在其他设备登陆！");
+        builder.setPositiveButton("重新登录",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppContext.getInstance().cleanUserInfo();
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("HuierpuUser", mContext.MODE_PRIVATE);
+                        SharedPreferences.Editor usereditor = sharedPreferences.edit();
+                        usereditor.putString("token", "");
+                        usereditor.commit();
+                        AppContext.token=null;
+                        finish();
+                        startActivity(new Intent(mContext, LoginActivity.class));
+                    }
+                });
+        builder.setCancelable(false);//设置不可点击back关闭dialog
+        builder.show();
     }
 }

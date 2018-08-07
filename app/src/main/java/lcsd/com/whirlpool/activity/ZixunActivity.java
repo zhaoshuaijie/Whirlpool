@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.ZixunAdapter;
 import lcsd.com.whirlpool.entity.NewsListAll;
@@ -158,21 +161,33 @@ public class ZixunActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    newsListAll = JSON.parseObject(json, NewsListAll.class);
-                    total = Integer.parseInt(newsListAll.getTotal());
-                    if (newsListAll.getSlider() != null && newsListAll.getSlider().size() != 0 && i == 0) {
-                        list_vp.addAll(newsListAll.getSlider());
-                        initVp();
-                    }
-                    if (newsListAll.getRslist() != null && newsListAll.getRslist().size() != 0) {
-                        if (i == 1) {
-                            list.clear();
+                    try {
+                        newsListAll = JSON.parseObject(json, NewsListAll.class);
+                        total = Integer.parseInt(newsListAll.getTotal());
+                        if (newsListAll.getSlider() != null && newsListAll.getSlider().size() != 0 && i == 0) {
+                            list_vp.addAll(newsListAll.getSlider());
+                            initVp();
                         }
-                        list.addAll(newsListAll.getRslist());
-                        zixunAdapter.notifyDataSetChanged();
-                    }
-                    if (i == 1 || i == 2) {
-                        ptrClassicFrameLayout.refreshComplete();
+                        if (newsListAll.getRslist() != null && newsListAll.getRslist().size() != 0) {
+                            if (i == 1) {
+                                list.clear();
+                            }
+                            list.addAll(newsListAll.getRslist());
+                            zixunAdapter.notifyDataSetChanged();
+                        }
+                        if (i == 1 || i == 2) {
+                            ptrClassicFrameLayout.refreshComplete();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

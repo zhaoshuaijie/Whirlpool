@@ -12,6 +12,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.RankAdapter;
 import lcsd.com.whirlpool.entity.Rank;
@@ -153,6 +156,14 @@ public class RankActivity extends BaseActivity implements View.OnClickListener {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,18 +124,29 @@ public class Zhuanti3Activity extends BaseActivity implements View.OnClickListen
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    ZhuantiNext zhuantiNext = JSON.parseObject(json, ZhuantiNext.class);
-                    if (zhuantiNext.getTotal() != null) {
-                        total = zhuantiNext.getTotal();
-                        if (zhuantiNext.getRslist() != null && zhuantiNext.getRslist().size() != 0) {
-                            if (i == 1) {
-                                list.clear();
+                    try {
+                        ZhuantiNext zhuantiNext = JSON.parseObject(json, ZhuantiNext.class);
+                        if (zhuantiNext.getTotal() != null) {
+                            total = zhuantiNext.getTotal();
+                            if (zhuantiNext.getRslist() != null && zhuantiNext.getRslist().size() != 0) {
+                                if (i == 1) {
+                                    list.clear();
+                                }
+                                list.addAll(zhuantiNext.getRslist());
+                                adapter.notifyDataSetChanged();
                             }
-                            list.addAll(zhuantiNext.getRslist());
-                            adapter.notifyDataSetChanged();
+                            if (i == 1 || i == 2) {
+                                mPtrFrame.refreshComplete();
+                            }
                         }
-                        if (i == 1 || i == 2) {
-                            mPtrFrame.refreshComplete();
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
                 }

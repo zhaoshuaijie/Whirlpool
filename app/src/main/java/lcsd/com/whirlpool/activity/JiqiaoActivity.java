@@ -10,6 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.JiqiaoAdapter;
 import lcsd.com.whirlpool.entity.Jiqiao;
@@ -17,6 +21,7 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,26 +85,34 @@ public class JiqiaoActivity extends BaseActivity implements View.OnClickListener
 
     //0：一开始请求，1：刷新调用
     private void requestData(final int i) {
-        Map<String,Object> map=new HashMap<>();
-        map.put("id","skill");
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "skill");
         ApiClient.requestNetHandle(this, AppConfig.Sy, "", map, new ResultListener() {
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    Jiqiao jiqiao = JSON.parseObject(json, Jiqiao.class);
-                    if (jiqiao != null && jiqiao.getTree() != null) {
-                        if (i == 1) {
-                            if(list!=null){
-                                list.clear();
-                            }
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ShowAginLoginDialog();
                         }
-                        list.addAll(jiqiao.getTree());
-                        adapter.notifyDataSetChanged();
-                        if (i == 1) {
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                        Jiqiao jiqiao = JSON.parseObject(json, Jiqiao.class);
+                        if (jiqiao != null && jiqiao.getTree() != null) {
+                            if (i == 1) {
+                                if (list != null) {
+                                    list.clear();
+                                }
+                            }
+                            list.addAll(jiqiao.getTree());
+                            adapter.notifyDataSetChanged();
+                            if (i == 1) {
+                                ptrClassicFrameLayout.refreshComplete();
+                            }
+                        } else {
                             ptrClassicFrameLayout.refreshComplete();
                         }
-                    } else {
-                        ptrClassicFrameLayout.refreshComplete();
                     }
                 }
             }

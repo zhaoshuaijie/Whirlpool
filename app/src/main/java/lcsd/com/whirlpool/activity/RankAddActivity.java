@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +135,14 @@ public class RankAddActivity extends BaseActivity implements View.OnClickListene
                     } catch (Exception e) {
                         e.printStackTrace();
                         mStatusView.showError();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }

@@ -20,12 +20,16 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.activity.BaodianActivity;
 import lcsd.com.whirlpool.activity.BaodianContentActivity;
 import lcsd.com.whirlpool.activity.JiqiaoActivity;
 import lcsd.com.whirlpool.activity.KaoshiActivity;
 import lcsd.com.whirlpool.activity.KuaixunActivity;
+import lcsd.com.whirlpool.activity.MainActivity;
 import lcsd.com.whirlpool.activity.ZhiboActivity;
 import lcsd.com.whirlpool.activity.ZhuantiActivity;
 import lcsd.com.whirlpool.activity.ZixunActivity;
@@ -36,6 +40,7 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.http.AppContext;
 import lcsd.com.whirlpool.listener.ResultListener;
+import lcsd.com.whirlpool.util.L;
 import lcsd.com.whirlpool.util.StringUtils;
 
 import java.util.ArrayList;
@@ -86,7 +91,7 @@ public class Fragment_main extends Fragment implements View.OnClickListener {
         ll_zx = (LinearLayout) getActivity().findViewById(R.id.ll_zuixin);
         iv = (ImageView) getActivity().findViewById(R.id.fmian_iv);
         ll_main = (ScrollView) getActivity().findViewById(R.id.ll_main);
-        mStatusView = (MultipleStatusView)getActivity().findViewById(R.id.multiple_status_view);
+        mStatusView = (MultipleStatusView) getActivity().findViewById(R.id.multiple_status_view);
         ptrClassicFrameLayout = (PtrClassicFrameLayout) getActivity().findViewById(R.id.frag_main_ptrframelayout);
         getActivity().findViewById(R.id.ll_main_1).setOnClickListener(this);
         getActivity().findViewById(R.id.ll_main_2).setOnClickListener(this);
@@ -150,6 +155,7 @@ public class Fragment_main extends Fragment implements View.OnClickListener {
         //设置重试视图点击事件
         mStatusView.setOnRetryClickListener(mRetryClickListener);
     }
+
     final View.OnClickListener mRetryClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -157,42 +163,52 @@ public class Fragment_main extends Fragment implements View.OnClickListener {
             requestData(1);
         }
     };
+
     private void requestData(final int i) {
         ApiClient.requestNetHandle(context, AppConfig.Sy, "", null, new ResultListener() {
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    sy = JSON.parseObject(json, Sy.class);
-                    if (sy.getNews() != null) {
-                        tv_title.setText(sy.getNews().getTitle());
-                        tv_note.setText(sy.getNews().getNote());
-                        tv_sj.setText(StringUtils.timeStamp2Date(sy.getNews().getDateline()));
-                        tv_ll.setText("浏览：" + sy.getNews().getHits());
-                        Glide.with(context).load(AppConfig.mainurl + sy.getNews().getThumb()).into(iv);
-                    }
-                    if (i == 1) {
-                        list.clear();
-                        if (sy.getProducts() != null) {
-                            list.addAll(sy.getProducts());
-                            if (hgridviewAdapter != null) {
-                                hgridviewAdapter.notifyDataSetChanged();
-                            } else {
-                                initGrid();
-                            }
+                    L.d("请求首页数据",json);
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ((MainActivity) getActivity()).ShowAginLoginDialog();
                         }
-
-                    } else {
-                        if (sy.getProducts() != null) {
-                            list.addAll(sy.getProducts());
-                            if (list.size() != 0) {
-                                initGrid();
-                            }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                        sy = JSON.parseObject(json, Sy.class);
+                        if (sy.getNews() != null) {
+                            tv_title.setText(sy.getNews().getTitle());
+                            tv_note.setText(sy.getNews().getNote());
+                            tv_sj.setText(StringUtils.timeStamp2Date(sy.getNews().getDateline()));
+                            tv_ll.setText("浏览：" + sy.getNews().getHits());
+                            Glide.with(context).load(AppConfig.mainurl + sy.getNews().getThumb()).into(iv);
                         }
+                        if (i == 1) {
+                            list.clear();
+                            if (sy.getProducts() != null) {
+                                list.addAll(sy.getProducts());
+                                if (hgridviewAdapter != null) {
+                                    hgridviewAdapter.notifyDataSetChanged();
+                                } else {
+                                    initGrid();
+                                }
+                            }
 
+                        } else {
+                            if (sy.getProducts() != null) {
+                                list.addAll(sy.getProducts());
+                                if (list.size() != 0) {
+                                    initGrid();
+                                }
+                            }
+
+                        }
+                        ptrClassicFrameLayout.refreshComplete();
+                        mStatusView.showContent();
                     }
-                    ptrClassicFrameLayout.refreshComplete();
-                    mStatusView.showContent();
-                }else {
+                } else {
                     mStatusView.showEmpty();
                 }
             }

@@ -29,8 +29,7 @@ import java.util.List;
 public class AppContext extends Application {
     public static AppContext appContext;
     private static Context context;
-    public static String phone;
-    public static String pwd;
+    public static String token = null;
 
     @Override
     public void onCreate() {
@@ -43,9 +42,8 @@ public class AppContext extends Application {
         MobSDK.init(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("HuierpuUser", MODE_PRIVATE);
-        if (sharedPreferences.getString("userid", "") != null && sharedPreferences.getString("userid", "").toString().length() > 1 && sharedPreferences.getString("pwd", "") != null && sharedPreferences.getString("pwd", "").toString().length() > 1) {
-            phone = sharedPreferences.getString("userid", "");
-            pwd = sharedPreferences.getString("pwd", "");
+        if (sharedPreferences.getString("token", "") != null && sharedPreferences.getString("token", "").toString().length() > 1) {
+            token = sharedPreferences.getString("token", "");
         }
 
         JPushInterface.setDebugMode(false);    // 设置开启日志,发布时请关闭日志
@@ -62,6 +60,7 @@ public class AppContext extends Application {
     public static Context getContext() {
         return context;
     }
+
 
 
     /**

@@ -8,6 +8,10 @@ import lcsd.com.whirlpool.util.L;
 import lcsd.com.whirlpool.util.StringUtils;
 import com.mingle.widget.ShapeLoadingDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -54,6 +58,12 @@ public class ApiClient {
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
 
+            }
+            if(AppContext.token!=null){
+                if(mapP==null){
+                    mapP=new HashMap<>();
+                }
+                mapP.put("token",AppContext.token);
             }
             if (null != mapP && mapP.size() > 0) {
                 L.d("TAG", "上传的参数:" + mapP.toString() + "请求地址:" + url);

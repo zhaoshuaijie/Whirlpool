@@ -8,12 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrDefaultHandler2;
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import lcsd.com.whirlpool.activity.MainActivity;
 import lcsd.com.whirlpool.adapter.WdjfAdapter;
 import lcsd.com.whirlpool.entity.MyPoint;
 import lcsd.com.whirlpool.http.ApiClient;
@@ -137,6 +140,14 @@ public class Fragment01 extends Fragment {
                             mPtrFrame.refreshComplete();
                         }
                     }catch (Exception e){
+                        try {
+                            JSONObject object=new JSONObject(json);
+                            if(object.getString("status").equals("2")){
+                                ((MainActivity)getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                         e.printStackTrace();
                     }
                 }

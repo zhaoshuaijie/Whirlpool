@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.MyBaseExpandableListWithGridView_Adapter;
 import lcsd.com.whirlpool.entity.Product;
@@ -85,46 +88,58 @@ public class BaodianActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    product = JSON.parseObject(json, Product.class);
-                    if (product.getTree().get(0).getSublist() != null && product.getTree().get(0).getSublist().size() != 0) {
-                        list1.addAll(product.getTree().get(0).getSublist());
-                        for (int i = 0; i < product.getTree().get(0).getSublist().size(); i++) {
-                            //提供父列表的数据
-                            Map<String, Object> parentMap = new HashMap<String, Object>();
-                            parentMap.put("parentName", product.getTree().get(0).getSublist().get(i).getTitle());
-                            parentMapList1.add(parentMap);
-                            //提供当前父列的子列数据
-                            List<Map<String, Object>> childMapList = new ArrayList<Map<String, Object>>();
-                            if (product.getTree().get(0).getSublist().get(i).getSublist() != null) {
-                                for (int j = 0; j < product.getTree().get(0).getSublist().get(i).getSublist().size(); j++) {
-                                    Map<String, Object> childMap = new HashMap<String, Object>();
-                                    childMap.put("childName", product.getTree().get(0).getSublist().get(i).getSublist().get(j).getTitle());
-                                    childMapList.add(childMap);
+                    try {
+                        product = JSON.parseObject(json, Product.class);
+                        if (product.getTree().get(0).getSublist() != null && product.getTree().get(0).getSublist().size() != 0) {
+                            list1.addAll(product.getTree().get(0).getSublist());
+                            for (int i = 0; i < product.getTree().get(0).getSublist().size(); i++) {
+                                //提供父列表的数据
+                                Map<String, Object> parentMap = new HashMap<String, Object>();
+                                parentMap.put("parentName", product.getTree().get(0).getSublist().get(i).getTitle());
+                                parentMapList1.add(parentMap);
+                                //提供当前父列的子列数据
+                                List<Map<String, Object>> childMapList = new ArrayList<Map<String, Object>>();
+                                if (product.getTree().get(0).getSublist().get(i).getSublist() != null) {
+                                    for (int j = 0; j < product.getTree().get(0).getSublist().get(i).getSublist().size(); j++) {
+                                        Map<String, Object> childMap = new HashMap<String, Object>();
+                                        childMap.put("childName", product.getTree().get(0).getSublist().get(i).getSublist().get(j).getTitle());
+                                        childMapList.add(childMap);
+                                    }
                                 }
+                                childMapList_list1.add(childMapList);
                             }
-                            childMapList_list1.add(childMapList);
                         }
-                    }
-                    if (product.getTree().get(1).getSublist() != null && product.getTree().get(1).getSublist().size() != 0) {
-                        list2.addAll(product.getTree().get(1).getSublist());
-                        for (int i = 0; i < product.getTree().get(1).getSublist().size(); i++) {
-                            //提供父列表的数据
-                            Map<String, Object> parentMap = new HashMap<String, Object>();
-                            parentMap.put("parentName", product.getTree().get(1).getSublist().get(i).getTitle());
-                            parentMapList2.add(parentMap);
-                            //提供当前父列的子列数据
-                            List<Map<String, Object>> childMapList = new ArrayList<Map<String, Object>>();
-                            if (product.getTree().get(1).getSublist().get(i).getSublist() != null) {
-                                for (int j = 0; j < product.getTree().get(1).getSublist().get(i).getSublist().size(); j++) {
-                                    Map<String, Object> childMap = new HashMap<String, Object>();
-                                    childMap.put("childName", product.getTree().get(1).getSublist().get(i).getSublist().get(j).getTitle());
-                                    childMapList.add(childMap);
+                        if (product.getTree().get(1).getSublist() != null && product.getTree().get(1).getSublist().size() != 0) {
+                            list2.addAll(product.getTree().get(1).getSublist());
+                            for (int i = 0; i < product.getTree().get(1).getSublist().size(); i++) {
+                                //提供父列表的数据
+                                Map<String, Object> parentMap = new HashMap<String, Object>();
+                                parentMap.put("parentName", product.getTree().get(1).getSublist().get(i).getTitle());
+                                parentMapList2.add(parentMap);
+                                //提供当前父列的子列数据
+                                List<Map<String, Object>> childMapList = new ArrayList<Map<String, Object>>();
+                                if (product.getTree().get(1).getSublist().get(i).getSublist() != null) {
+                                    for (int j = 0; j < product.getTree().get(1).getSublist().get(i).getSublist().size(); j++) {
+                                        Map<String, Object> childMap = new HashMap<String, Object>();
+                                        childMap.put("childName", product.getTree().get(1).getSublist().get(i).getSublist().get(j).getTitle());
+                                        childMapList.add(childMap);
+                                    }
                                 }
+                                childMapList_list2.add(childMapList);
                             }
-                            childMapList_list2.add(childMapList);
+                        }
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object=new JSONObject(json);
+                            if(object.getString("status").equals("2")){
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
                 }
+
             }
 
             @Override

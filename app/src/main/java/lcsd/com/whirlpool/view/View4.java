@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import lcsd.com.whirlpool.R;
+import lcsd.com.whirlpool.activity.BaodianContentActivity;
 import lcsd.com.whirlpool.entity.UserInfo;
 import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
@@ -195,6 +197,7 @@ public class View4 extends FrameLayout implements View.OnClickListener {
                 }
         }
     }
+
     //给外层activity提供视频进度值
     public int getjindu() {
         return video.getJindu();
@@ -211,9 +214,13 @@ public class View4 extends FrameLayout implements View.OnClickListener {
                 if (json != null) {
                     try {
                         JSONObject object = new JSONObject(json);
-                        String status = object.getString("status");
+                        int status = object.getInt("status");
                         String info = object.getString("info");
-                        updatexinxi();
+                        if (status == 1) {
+                            updatexinxi();
+                        } else if (status == 2) {
+                            ((BaodianContentActivity) context).ShowAginLoginDialog();
+                        }
                         Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -235,12 +242,23 @@ public class View4 extends FrameLayout implements View.OnClickListener {
             @Override
             public void onSuccess(String json) {
                 L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                if (userInfo != null) {
-                    if (AppContext.getInstance().checkUser()) {
-                        AppContext.getInstance().cleanUserInfo();
+                try {
+                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                    if (userInfo != null) {
+                        if (AppContext.getInstance().checkUser()) {
+                            AppContext.getInstance().cleanUserInfo();
+                        }
+                        AppContext.getInstance().saveUserInfo(userInfo);
                     }
-                    AppContext.getInstance().saveUserInfo(userInfo);
+                } catch (Exception e) {
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ((BaodianContentActivity) context).ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 

@@ -12,6 +12,9 @@ import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.Map;
 
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.activity.FeedBackActivity;
+import lcsd.com.whirlpool.activity.MainActivity;
 import lcsd.com.whirlpool.adapter.FeedBackAdaper;
 import lcsd.com.whirlpool.entity.FeedBack;
 import lcsd.com.whirlpool.http.ApiClient;
@@ -87,14 +91,25 @@ public class Fragment06 extends Fragment {
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    List<FeedBack> list = JSON.parseArray(json, FeedBack.class);
-                    if (list != null && list.size() > 0) {
-                        mList.clear();
-                        mList.addAll(list);
-                        mAdaper.notifyDataSetChanged();
-                        mStatusView.showContent();
-                    } else {
-                        mStatusView.showEmpty();
+                    try {
+                        List<FeedBack> list = JSON.parseArray(json, FeedBack.class);
+                        if (list != null && list.size() > 0) {
+                            mList.clear();
+                            mList.addAll(list);
+                            mAdaper.notifyDataSetChanged();
+                            mStatusView.showContent();
+                        } else {
+                            mStatusView.showEmpty();
+                        }
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ((MainActivity) getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 } else {
                     mStatusView.showError();

@@ -184,8 +184,11 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                         int ststus = jsonObject.getInt("status");
                         if (ststus == 1) {
                             clearCache();
+                        } else if (ststus == 2) {
+                            ShowAginLoginDialog();
+                        }else {
+                            Toast.makeText(mContext, jsonObject.getString("info"), Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(mContext, jsonObject.getString("info"), Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(mContext, "上传失败,请稍候重试！", Toast.LENGTH_SHORT).show();

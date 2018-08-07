@@ -49,7 +49,7 @@ import java.util.Map;
  */
 public class Fragment05 extends Fragment {
     private Context context;
-    private TextView spinner1, spinner2, spinner3, spinner4, tv_xm, tv_jf, tv_bc,tv_tc;
+    private TextView spinner1, spinner2, spinner3, spinner4, tv_xm, tv_jf, tv_bc, tv_tc;
     private EditText et_nc, et_qm;
     private CircleImageView civ;
     protected static final int CHOOSE_PICTURE = 0;
@@ -123,7 +123,7 @@ public class Fragment05 extends Fragment {
             tv_xm.setText(" 姓名：" + AppContext.getInstance().getUserInfo().getFullname());
             tv_jf.setText(" 积分：" + AppContext.getInstance().getUserInfo().getPoint());
         }
-        tv_tc= (TextView) getActivity().findViewById(R.id.f5_tv_tc);
+        tv_tc = (TextView) getActivity().findViewById(R.id.f5_tv_tc);
         tv_tc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,8 +131,9 @@ public class Fragment05 extends Fragment {
             }
         });
     }
-    private void selectlogout(){
-        dialog=new ActionSheetDialog1(context);
+
+    private void selectlogout() {
+        dialog = new ActionSheetDialog1(context);
         dialog.builder().setTitle("退出登录").addSheetItem("确定", null, new ActionSheetDialog1.OnSheetItemClickListener() {
             @Override
             public void onClick(int which) {
@@ -140,7 +141,8 @@ public class Fragment05 extends Fragment {
             }
         }).show();
     }
-    private void request_tc(){
+
+    private void request_tc() {
         Map<String, Object> map = new HashMap<>();
         map.put("c", "logout");
         ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
@@ -153,23 +155,23 @@ public class Fragment05 extends Fragment {
                         int status = object.getInt("status");
                         if (status == 1) {
                             AppContext.getInstance().cleanUserInfo();
-                            SharedPreferences sharedPreferences =context.getSharedPreferences("HuierpuUser",context.MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = context.getSharedPreferences("HuierpuUser", context.MODE_PRIVATE);
                             SharedPreferences.Editor usereditor = sharedPreferences.edit();
-                            usereditor.putString("userid", "");
-                            usereditor.putString("pwd", "");
+                            usereditor.putString("token", "");
                             usereditor.commit();
                             context.startActivity(new Intent(context, LoginActivity.class));
                             getActivity().finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        AppContext.getInstance().cleanUserInfo();
-                        SharedPreferences sharedPreferences =context.getSharedPreferences("HuierpuUser",context.MODE_PRIVATE);
-                        SharedPreferences.Editor usereditor = sharedPreferences.edit();
-                        usereditor.putString("userid", "");
-                        usereditor.putString("pwd", "");
-                        usereditor.commit();
-                        getActivity().finish();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ((MainActivity) getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
@@ -180,6 +182,7 @@ public class Fragment05 extends Fragment {
             }
         });
     }
+
     private void request_xgall(int i, String s, String s1, String s2) {
         Map<String, Object> map = new HashMap<>();
         map.put("c", "usercp");
@@ -212,7 +215,15 @@ public class Fragment05 extends Fragment {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(context, "修改异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ((MainActivity) getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            Toast.makeText(context, "修改异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -260,7 +271,7 @@ public class Fragment05 extends Fragment {
                         .compress(true)
                         .isGif(true)
                         .glideOverride(160, 160)
-                        .withAspectRatio(1,1)
+                        .withAspectRatio(1, 1)
                         .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
                         .showCropGrid(true)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
                         .minimumCompressSize(200)// 小于200kb的图片不压缩
@@ -269,6 +280,7 @@ public class Fragment05 extends Fragment {
             }
         }).show();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -276,13 +288,13 @@ public class Fragment05 extends Fragment {
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择
-                    if(PictureSelector.obtainMultipleResult(data).size()>0){
+                    if (PictureSelector.obtainMultipleResult(data).size() > 0) {
                         // 1.media.getPath(); 为原图path
                         // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true  注意：音视频除外
                         // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true  注意：音视频除外
                         // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
-                     File file=new File(PictureSelector.obtainMultipleResult(data).get(0).getCompressPath());
-                        if(file.exists()){
+                        File file = new File(PictureSelector.obtainMultipleResult(data).get(0).getCompressPath());
+                        if (file.exists()) {
                             request_photo(file);
                         }
                     }
@@ -290,6 +302,7 @@ public class Fragment05 extends Fragment {
             }
         }
     }
+
     private void selectSex() {
         dialog = new ActionSheetDialog1(context);
         dialog.builder().setTitle("选择性别").addSheetItem("男", null, new ActionSheetDialog1.OnSheetItemClickListener() {
@@ -308,7 +321,6 @@ public class Fragment05 extends Fragment {
             }
         }).show();
     }
-
 
 
     private void request_photo(File file) {
@@ -334,7 +346,15 @@ public class Fragment05 extends Fragment {
                         PictureFileUtils.deleteCacheDirFile(getActivity());
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(context, "上传异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ((MainActivity) getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            Toast.makeText(context, "上传异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -368,7 +388,15 @@ public class Fragment05 extends Fragment {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(context, "修改异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ((MainActivity) getActivity()).ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            Toast.makeText(context, "上传异常，请稍后重试", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -385,18 +413,29 @@ public class Fragment05 extends Fragment {
             @Override
             public void onSuccess(String json) {
                 L.d("个人信息--------", json);
-                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                if (userInfo != null) {
-                    if (AppContext.getInstance().checkUser()) {
-                        AppContext.getInstance().cleanUserInfo();
+                try {
+                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                    if (userInfo != null) {
+                        if (AppContext.getInstance().checkUser()) {
+                            AppContext.getInstance().cleanUserInfo();
+                        }
+                        AppContext.getInstance().saveUserInfo(userInfo);
+                        RequestOptions options = new RequestOptions();
+                        options.fitCenter();
+                        Glide.with(context).load(AppConfig.mainurl + AppContext.getInstance().getUserInfo().getAvatar()).apply(options).into(civ);
+                        MainActivity activity = (MainActivity) getActivity();
+                        Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
+                        activity.updataui();
                     }
-                    AppContext.getInstance().saveUserInfo(userInfo);
-                    RequestOptions options = new RequestOptions();
-                    options.fitCenter();
-                    Glide.with(context).load(AppConfig.mainurl + AppContext.getInstance().getUserInfo().getAvatar()).apply(options).into(civ);
-                    MainActivity activity = (MainActivity) getActivity();
-                    Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
-                    activity.updataui();
+                } catch (Exception e) {
+                    try {
+                        JSONObject object = new JSONObject(json);
+                        if (object.getString("status").equals("2")) {
+                            ((MainActivity) getActivity()).ShowAginLoginDialog();
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 

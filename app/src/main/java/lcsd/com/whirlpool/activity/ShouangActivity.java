@@ -1,13 +1,15 @@
 package lcsd.com.whirlpool.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.adapter.ScAdapter;
 import lcsd.com.whirlpool.entity.ShouCang;
@@ -15,9 +17,6 @@ import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class ShouangActivity extends BaseActivity implements View.OnClickListene
 
     private void initData() {
         list = new ArrayList<>();
-        adapter = new ScAdapter(this, list,title);
+        adapter = new ScAdapter(this, list, title);
         lv.setAdapter(adapter);
         ptrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler2() {
 
@@ -82,9 +81,9 @@ public class ShouangActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public boolean checkCanDoLoadMore(PtrFrameLayout frame, View content, View footer) {
-                if(pageid<total){
+                if (pageid < total) {
                     return super.checkCanDoLoadMore(frame, lv, footer);
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -97,37 +96,48 @@ public class ShouangActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void request_data(final int i) {
-        if(i==2){
-            if (pageid  < total) {
+        if (i == 2) {
+            if (pageid < total) {
                 pageid++;
-            }else{
+            } else {
                 ptrClassicFrameLayout.refreshComplete();
                 return;
             }
         }
-        if(i==1){
-            pageid=1;
+        if (i == 1) {
+            pageid = 1;
         }
         Map<String, Object> map = new HashMap<>();
         map.put("c", "usercp");
         map.put("f", "fav");
         map.put("pid", id);
-        map.put("pageid",pageid);
+        map.put("pageid", pageid);
         ApiClient.requestNetHandle(ShouangActivity.this, AppConfig.Sy, "", map, new ResultListener() {
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
-                    ShouCang Sc = JSONArray.parseObject(json, ShouCang.class);
-                    total = Sc.getTotal();
-                    if (Sc.getRslist() != null && Sc.getRslist().size() > 0) {
-                        if (i == 1) {
-                            list.clear();
+                    try {
+                        ShouCang Sc = JSONArray.parseObject(json, ShouCang.class);
+                        total = Sc.getTotal();
+                        if (Sc.getRslist() != null && Sc.getRslist().size() > 0) {
+                            if (i == 1) {
+                                list.clear();
+                            }
+                            list.addAll(Sc.getRslist());
+                            adapter.notifyDataSetChanged();
                         }
-                        list.addAll(Sc.getRslist());
-                        adapter.notifyDataSetChanged();
-                    }
-                    if (i == 1 || i == 2) {
-                        ptrClassicFrameLayout.refreshComplete();
+                        if (i == 1 || i == 2) {
+                            ptrClassicFrameLayout.refreshComplete();
+                        }
+                    } catch (Exception e) {
+                        try {
+                            JSONObject object = new JSONObject(json);
+                            if (object.getString("status").equals("2")) {
+                                ShowAginLoginDialog();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
