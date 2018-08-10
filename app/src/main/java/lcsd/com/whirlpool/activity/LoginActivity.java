@@ -3,9 +3,7 @@ package lcsd.com.whirlpool.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,7 +21,7 @@ import lcsd.com.whirlpool.http.AppContext;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.util.L;
 
-import com.mob.MobSDK;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,13 +33,13 @@ import cn.smssdk.SMSSDK;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private TextView button/*, btn_zhuce*/;
+    private TextView button;
     private TextView tv_forgot;
     private Context context;
     private EditText login_phone, login_code;
     //新增登陆验证码
-    private EditText et_yzm;
-    private TextView tv_yzm;
+    /*private EditText et_yzm;
+    private TextView tv_yzm;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         context = this;
 
-        MobSDK.init(this, "1ee7a6a498945", "3ab7ef2e358bdba0e2d57ff173f80845");
-        initYzm();
+        //MobSDK.init(this, "1ee7a6a498945", "3ab7ef2e358bdba0e2d57ff173f80845");
+        //initYzm();
 
         initView();
     }
@@ -70,9 +68,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login_phone = (EditText) findViewById(R.id.login_phone);
         login_code = (EditText) findViewById(R.id.login_code);
 
-        et_yzm = (EditText) findViewById(R.id.et_lg_yzm);
+       /* et_yzm = (EditText) findViewById(R.id.et_lg_yzm);
         tv_yzm = (TextView) findViewById(R.id.btn_lg_yzm);
-        tv_yzm.setOnClickListener(this);
+        tv_yzm.setOnClickListener(this);*/
     }
 
     private void initYzm() {
@@ -137,14 +135,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else if (TextUtils.isEmpty(login_code.getText().toString())) {
                     Toast.makeText(context, "请输入密码", Toast.LENGTH_LONG).show();
                     return;
-                } else if (TextUtils.isEmpty(et_yzm.getText().toString())) {
+                }
+                request_logo();
+               /* else if (TextUtils.isEmpty(et_yzm.getText().toString())) {
                     Toast.makeText(context, "请输入验证码", Toast.LENGTH_LONG).show();
                     return;
                 }
-                //request_logo();
-                //提交验证码验证
+                提交验证码验证
                 String number = et_yzm.getText().toString();
-                SMSSDK.submitVerificationCode("86", login_phone.getText().toString(), number);
+                SMSSDK.submitVerificationCode("86", login_phone.getText().toString(), number);*/
                 break;
            /* case R.id.btn_zhuce:
                 startActivity(new Intent(context, Activity_zhuce.class));
@@ -153,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(new Intent(context, Modify_Activity.class));
                 break;
             //新增登陆验证
-            case R.id.btn_lg_yzm:
+           /* case R.id.btn_lg_yzm:
                 if (TextUtils.isEmpty(login_phone.getText().toString())) {
                     Toast.makeText(context, "手机号码不能为空", Toast.LENGTH_SHORT)
                             .show();
@@ -166,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 countDown();
                 //获取验证码
                 SMSSDK.getVerificationCode("86", login_phone.getText().toString());
-                break;
+                break;*/
         }
     }
 
@@ -179,24 +178,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(String json) {
                 if (json != null) {
+                    L.d("登录信息：", json);
                     try {
                         JSONObject object = new JSONObject(json);
                         String info = object.getString("info");
                         int status = object.getInt("status");
-                        String token=object.getString("token");
-                        if (status == 1&&token!=null) {
+                        if (status == 1) {
+                            String token = object.getString("token");
                             Toast.makeText(context, "登陆成功", Toast.LENGTH_SHORT).show();
                             SharedPreferences sharedPreferences = getSharedPreferences("HuierpuUser", MODE_PRIVATE);
                             SharedPreferences.Editor usereditor = sharedPreferences.edit();
                             usereditor.putString("token", token);
                             usereditor.commit();
-                            AppContext.token=token;
+                            AppContext.token = token;
                             requestLUserInfo();
                         } else {
                             Toast.makeText(context, "登陆失败：" + info, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, "登陆失败", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -209,11 +210,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void requestLUserInfo() {
-        if(AppContext.token!=null){
-            HashMap<String,Object> map=new HashMap<>();
-            map.put("c","usercp");
-            map.put("token",AppContext.token);
-            ApiClient.requestNetHandle(context, AppConfig.Sy , "", map, new ResultListener() {
+        if (AppContext.token != null) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("c", "usercp");
+            map.put("token", AppContext.token);
+            ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
                 @Override
                 public void onSuccess(String json) {
                     L.d("个人信息--------", json);
@@ -235,10 +236,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SMSSDK.unregisterAllEventHandler();
+        //SMSSDK.unregisterAllEventHandler();
     }
 
-    private CountDownTimer timer;
+    /*private CountDownTimer timer;
 
     private void countDown() {
         timer = new CountDownTimer(60 * 1000, 1000) {
@@ -266,5 +267,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_yzm.setBackgroundResource(R.drawable.tv_yellow);
         tv_yzm.setText("重新发送");
         tv_yzm.setOnClickListener(this);
-    }
+    }*/
 }

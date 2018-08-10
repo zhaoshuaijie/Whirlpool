@@ -159,6 +159,7 @@ public class Fragment05 extends Fragment {
                             SharedPreferences.Editor usereditor = sharedPreferences.edit();
                             usereditor.putString("token", "");
                             usereditor.commit();
+                            AppContext.token=null;
                             context.startActivity(new Intent(context, LoginActivity.class));
                             getActivity().finish();
                         }
