@@ -14,6 +14,7 @@ import android.widget.Toast;
 import lcsd.com.whirlpool.R;
 import lcsd.com.whirlpool.http.ApiClient;
 import lcsd.com.whirlpool.http.AppConfig;
+import lcsd.com.whirlpool.http.AppContext;
 import lcsd.com.whirlpool.listener.ResultListener;
 import lcsd.com.whirlpool.listener.SmallBangListener;
 import lcsd.com.whirlpool.manager.ActivityManager;
@@ -31,6 +32,8 @@ import com.tencent.smtt.sdk.WebViewClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,7 +92,15 @@ public class ZixunContentActivity extends BaseActivity implements View.OnClickLi
         webview.getSettings().getLoadWithOverviewMode();
         webview.getSettings().getJavaScriptCanOpenWindowsAutomatically();
         webview.getSettings().setDomStorageEnabled(true);
-        webview.loadUrl(url);
+        if (AppContext.token != null) {
+            try {
+                webview.loadUrl(url + "&token=" + URLEncoder.encode(AppContext.token, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            webview.loadUrl(url);
+        }
         //载入js
         webview.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
 
