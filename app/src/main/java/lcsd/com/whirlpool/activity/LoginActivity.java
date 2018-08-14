@@ -37,19 +37,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView tv_forgot;
     private Context context;
     private EditText login_phone, login_code;
-    //新增登陆验证码
-    /*private EditText et_yzm;
-    private TextView tv_yzm;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = this;
-
-        //MobSDK.init(this, "1ee7a6a498945", "3ab7ef2e358bdba0e2d57ff173f80845");
-        //initYzm();
-
         initView();
     }
 
@@ -59,70 +52,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        button = (TextView) findViewById(R.id.btn_login);
+        button =  findViewById(R.id.btn_login);
         button.setOnClickListener(this);
-        /*btn_zhuce = (TextView) findViewById(R.id.btn_zhuce);
-        btn_zhuce.setOnClickListener(this);*/
-        tv_forgot = (TextView) findViewById(R.id.tv_forgot);
+        tv_forgot = findViewById(R.id.tv_forgot);
         tv_forgot.setOnClickListener(this);
-        login_phone = (EditText) findViewById(R.id.login_phone);
-        login_code = (EditText) findViewById(R.id.login_code);
-
-       /* et_yzm = (EditText) findViewById(R.id.et_lg_yzm);
-        tv_yzm = (TextView) findViewById(R.id.btn_lg_yzm);
-        tv_yzm.setOnClickListener(this);*/
+        login_phone =  findViewById(R.id.login_phone);
+        login_code =  findViewById(R.id.login_code);
     }
 
-    private void initYzm() {
-        EventHandler handler = new EventHandler() {
-            @Override
-            public void afterEvent(int event, int result, Object data) {
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        //提交验证码成功
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtils.isEmpty(login_code.getText().toString())) {
-                                    request_logo();
-                                }
-                            }
-                        });
-
-                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        //获取验证码成功
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "验证码已发送,五分钟内有效！", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                } else {
-                    ((Throwable) data).printStackTrace();
-                    Throwable throwable = (Throwable) data;
-                    try {
-                        JSONObject obj = new JSONObject(throwable.getMessage());
-                        final String des = obj.optString("detail");
-                        if (!TextUtils.isEmpty(des)) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, des, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        };
-        // 注册监听器
-        SMSSDK.registerEventHandler(handler);
-    }
 
     @Override
     public void onClick(View view) {
@@ -137,35 +74,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     return;
                 }
                 request_logo();
-               /* else if (TextUtils.isEmpty(et_yzm.getText().toString())) {
-                    Toast.makeText(context, "请输入验证码", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                提交验证码验证
-                String number = et_yzm.getText().toString();
-                SMSSDK.submitVerificationCode("86", login_phone.getText().toString(), number);*/
                 break;
-           /* case R.id.btn_zhuce:
-                startActivity(new Intent(context, Activity_zhuce.class));
-                break;*/
             case R.id.tv_forgot:
                 startActivity(new Intent(context, Modify_Activity.class));
                 break;
-            //新增登陆验证
-           /* case R.id.btn_lg_yzm:
-                if (TextUtils.isEmpty(login_phone.getText().toString())) {
-                    Toast.makeText(context, "手机号码不能为空", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                } else if (login_phone.getText().toString().length() != 11) {
-                    Toast.makeText(context, "请正确输入手机号", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-                countDown();
-                //获取验证码
-                SMSSDK.getVerificationCode("86", login_phone.getText().toString());
-                break;*/
         }
     }
 
@@ -210,62 +122,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void requestLUserInfo() {
-        if (AppContext.token != null) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("c", "usercp");
-            map.put("token", AppContext.token);
-            ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
-                @Override
-                public void onSuccess(String json) {
-                    L.d("个人信息--------", json);
-                    UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
-                    AppContext.getInstance().saveUserInfo(userInfo);
-                    startActivity(new Intent(context, MainActivity.class));
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    LoginActivity.this.finish();
-                }
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("c", "usercp");
+        ApiClient.requestNetHandle(context, AppConfig.Sy, "", map, new ResultListener() {
+            @Override
+            public void onSuccess(String json) {
+                L.d("个人信息--------", json);
+                UserInfo userInfo = JSON.parseObject(json, UserInfo.class);
+                AppContext.getInstance().saveUserInfo(userInfo);
+                startActivity(new Intent(context, MainActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                LoginActivity.this.finish();
+            }
 
-                @Override
-                public void onFailure(String msg) {
-                    L.d("个人信息异常：---", msg);
-                }
-            });
-        }
+            @Override
+            public void onFailure(String msg) {
+                L.d("个人信息异常：---", msg);
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //SMSSDK.unregisterAllEventHandler();
     }
 
-    /*private CountDownTimer timer;
-
-    private void countDown() {
-        timer = new CountDownTimer(60 * 1000, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                tv_yzm.setOnClickListener(null);
-                tv_yzm.setText("重新发送" + "（" + millisUntilFinished / 1000 + "）");
-                tv_yzm.setTextColor(getResources().getColor(R.color.gray2));
-                tv_yzm.setBackgroundResource(R.drawable.check_button_1);
-            }
-
-            @Override
-            public void onFinish() {
-                clickCode();
-            }
-        };
-        // 调用start方法开始倒计时
-        timer.start();
-    }
-
-    private void clickCode() {
-        tv_yzm.setTextColor(Color.WHITE);
-        tv_yzm.setOnClickListener(this);
-        tv_yzm.setBackgroundResource(R.drawable.tv_yellow);
-        tv_yzm.setText("重新发送");
-        tv_yzm.setOnClickListener(this);
-    }*/
 }

@@ -10,8 +10,8 @@ android {
         applicationId "lcsd.com.whirlpool"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 18
-        versionName "v2.6.2"
+        versionCode 19
+        versionName "v2.6.3"
         multiDexEnabled true
 
         ndk {
